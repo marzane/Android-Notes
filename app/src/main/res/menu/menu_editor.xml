@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/save_file"
+        android:icon="@drawable/file_save"
+        android:title="save file"
+        app:showAsAction="ifRoom"/>
+
+    <!--overflow. -->
+
+    <item android:id="@+id/save_file_as"
+        android:title="save as"
+        android:icon="@drawable/open_folder"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/open_file"
+        android:icon="@drawable/open_folder"
+        android:title="open"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/new_file"
+        android:title="new"
+        android:icon="@drawable/file_add"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/close_app"
+        android:title="close app"
+        android:icon="@drawable/close_app"
+        app:showAsAction="never"/>
+
+</menu>

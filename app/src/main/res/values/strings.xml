@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="extra_intent_uri_file">uriFile</string>
+</resources>
