@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas;
+package com.marzane.notes_app;
 
 import android.content.Context;
 import android.util.AttributeSet;

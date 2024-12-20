@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.Threads;
+package com.marzane.notes_app.Threads;
 
 import android.os.Handler;
 import android.os.Looper;

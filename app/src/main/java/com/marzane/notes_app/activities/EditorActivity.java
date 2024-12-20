@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.activities;
+package com.marzane.notes_app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,12 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.marzane.bloc_de_notas.R;
-import com.marzane.bloc_de_notas.Threads.TaskRunner;
-import com.marzane.bloc_de_notas.Threads.task.InsertOrUpdateFile;
-import com.marzane.bloc_de_notas.Threads.task.deleteByPathTask;
-import com.marzane.bloc_de_notas.Utils.FileUtil;
-import com.marzane.bloc_de_notas.models.NoteModel;
+import com.marzane.notes_app.R;
+import com.marzane.notes_app.Threads.TaskRunner;
+import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
+import com.marzane.notes_app.Threads.task.deleteByPathTask;
+import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.models.NoteModel;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +36,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final int OPEN_FILE_PROVIDER = 1;
     private static final int SAVE_FILE_AS = 2;
 
+    private Intent intent;
     private final String NOMBRE_POR_DEFECTO = "newFile.txt";
     private String texto;  // el texto que contiene el archivo
     private NoteModel note;
@@ -53,6 +54,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         note = new NoteModel();
 
+        // initialize toolbar
         Toolbar toolbar = findViewById(R.id.toolbar_editor);
         setSupportActionBar(toolbar);
 
@@ -69,32 +71,50 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             getSupportActionBar().setTitle(note.getTitle());
         }
 
-        Intent intent = getIntent();
+
+        intent = getIntent();
         Bundle b = intent.getExtras();  // en el caso de querer abrir un archivo que ya existe
                                         // deberia recibir la uri
         if(b!=null)
         {
-            Uri uriArchivo = (Uri) b.get("@string/extra_intent_uri_file");
+            Uri uriFile = (Uri) b.get("@string/extra_intent_uri_file");
 
-            if(uriArchivo != null) {  // obtengo la ruta real y el nombre del archivo
+            if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
-                getContentResolver().takePersistableUriPermission(uriArchivo, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uriArchivo, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                note.setPath(uriArchivo);
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                note.setPath(uriFile);
+                texto = FileUtil.readFile(uriFile, this);
 
-                texto = FileUtil.readFile(uriArchivo, this);
                 if(texto == null){
-                    taskRunner.executeAsync(new deleteByPathTask(this, note.getPath().getPath()), (dataResult) -> {});
-                    finish();  // no se pudo leer, regresa a la pantalla de inicio
+                    taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
+                        Toast.makeText(this, dataResult + "", Toast.LENGTH_LONG).show();
+                    });
+                    finish();                                                  // close this activity
                 } else {
                     etEditor.setText(texto);
-                    handlePathOz.getRealPath(uriArchivo);
+                    handlePathOz.getRealPath(uriFile);
                 }
 
             }
 
         }
 
+    }
+
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        // TODO: mostrar teclado android automaticamente para escribir en el editText
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
 
@@ -131,7 +151,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         if(note.getRealPath() == null){
                             FileUtil.writeFile(note.getPath(), texto, this);
                         } else {
-                            FileUtil.overwriteFile(note.getRealPath(), texto, this);  // escribir el texto en el archivo creado
+                            FileUtil.overwriteFile(note.getRealPath(), texto, this);
                         }
 
                     }
@@ -154,37 +174,12 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         texto = FileUtil.readFile(uri, this);
                         etEditor.setText(texto);
 
-                        //Intent intentEditor = new Intent(this, EditorActivity.class);
-                        //intentEditor.putExtra("@string/extra_intent_uri_file", uri);
-                        //startActivity(intentEditor);
                     }
                     break;
                 case Activity.RESULT_CANCELED:
                     break;
             }
         }
-    }
-
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-
-        // TODO: mostrar teclado android automaticamente para escribir en el editText
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(note.getPath() != null){
-            updateRecentFileBD();
-        }
-        super.onDestroy();
-    }
-
-    public void updateRecentFileBD(){
-        note.setlastEdit(LocalDateTime.now());
-        taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {});
     }
 
 
@@ -197,8 +192,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         note.setTitle(nombreArchivo);
         note.setRealPath(pathOz.getPath());
 
-        if(!rutaRealArchivo.isEmpty())
+        if(!rutaRealArchivo.isEmpty()) {
             Toast.makeText(this, "opening file " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
+            note.setlastOpened(LocalDateTime.now());
+            taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {});
+        }
 
         //Handle Exception (Optional)
         if (tr != null) {

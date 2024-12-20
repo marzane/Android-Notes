@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.repository;
+package com.marzane.notes_app.repository;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.marzane.bloc_de_notas.Utils.DateUtil;
-import com.marzane.bloc_de_notas.models.NoteModel;
-import com.marzane.bloc_de_notas.repository.database.DatabaseContrat;
+import com.marzane.notes_app.Utils.DateUtil;
+import com.marzane.notes_app.models.NoteModel;
+import com.marzane.notes_app.repository.database.DatabaseContrat;
 
 import java.util.ArrayList;
 
@@ -192,7 +192,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, modelo.getTitle());
-        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastEdit()));
+        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastOpened()));
         values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath().toString());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, modelo.getRealPath());
 
@@ -211,7 +211,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, modelo.getTitle());
-        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastEdit()));
+        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastOpened()));
         values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath().toString());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, modelo.getRealPath());
 
@@ -236,7 +236,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, modelo.getTitle());
-        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastEdit()));
+        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastOpened()));
 
         // Which row to update, based on the path column
         String selection = recentNoteTable.COLUMN_NAME_PATH + " LIKE ?";

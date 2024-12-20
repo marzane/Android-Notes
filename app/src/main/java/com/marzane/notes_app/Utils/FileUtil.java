@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.Utils;
+package com.marzane.notes_app.Utils;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;

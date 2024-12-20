@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.adapters;
+package com.marzane.notes_app.adapters;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,10 +8,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.marzane.bloc_de_notas.R;
-import com.marzane.bloc_de_notas.Utils.DateUtil;
-import com.marzane.bloc_de_notas.activities.EditorActivity;
-import com.marzane.bloc_de_notas.models.NoteModel;
+import com.marzane.notes_app.R;
+import com.marzane.notes_app.Utils.DateUtil;
+import com.marzane.notes_app.activities.EditorActivity;
+import com.marzane.notes_app.models.NoteModel;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTvTitle().setText(note.getTitle());
-        viewHolder.getTvLastEdit().setText(DateUtil.LocalDateTimeToString(note.getLastEdit()));
+        viewHolder.getTvLastEdit().setText(DateUtil.LocalDateTimeToString(note.getLastOpened()));
 
         // when you click an item
         viewHolder.itemView.setOnClickListener(view -> {

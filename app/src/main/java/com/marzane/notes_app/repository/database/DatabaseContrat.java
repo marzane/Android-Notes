@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.repository.database;
+package com.marzane.notes_app.repository.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.repository;
+package com.marzane.notes_app.repository;
 
 import java.util.ArrayList;
 

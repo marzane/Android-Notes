@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.marzane.bloc_de_notas.GridViewItem xmlns:android="http://schemas.android.com/apk/res/android"
+<com.marzane.notes_app.GridViewItem xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
@@ -30,4 +30,4 @@
         android:layout_weight="10"
         android:rotation="-6"/>
 
-</com.marzane.bloc_de_notas.GridViewItem>
+</com.marzane.notes_app.GridViewItem>

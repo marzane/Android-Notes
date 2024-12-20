@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.marzane.bloc_de_notas'
+    namespace 'com.marzane.notes_app'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.marzane.bloc_de_notas"
+        applicationId "com.marzane.notes_app"
         minSdk 25
         targetSdk 34
         versionCode 1

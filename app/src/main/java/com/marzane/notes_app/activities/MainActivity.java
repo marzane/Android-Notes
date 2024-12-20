@@ -1,4 +1,4 @@
-package com.marzane.bloc_de_notas.activities;
+package com.marzane.notes_app.activities;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
@@ -28,11 +28,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.marzane.bloc_de_notas.R;
-import com.marzane.bloc_de_notas.Threads.task.ListAllNotesTask;
-import com.marzane.bloc_de_notas.Threads.TaskRunner;
-import com.marzane.bloc_de_notas.adapters.NoteCustomAdapter;
-import com.marzane.bloc_de_notas.models.NoteModel;
+import com.marzane.notes_app.R;
+import com.marzane.notes_app.Threads.task.ListAllNotesTask;
+import com.marzane.notes_app.Threads.TaskRunner;
+import com.marzane.notes_app.adapters.NoteCustomAdapter;
+import com.marzane.notes_app.models.NoteModel;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity{
 
     public static final int OPEN_FILE_PROVIDER = 1;
-    public static final int OPEN_FILE = 2;
 
     private TaskRunner taskRunner = new TaskRunner();
     private RecyclerView rvNoteList;
@@ -65,15 +64,18 @@ public class MainActivity extends AppCompatActivity{
         screen_height = displayMetrics.heightPixels;
         screen_width = displayMetrics.widthPixels;
 
+        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
+
     }
 
 
     @Override
     protected void onStart() {
+        Toast.makeText(this, "onStart()", Toast.LENGTH_SHORT).show();
+
         // preparando el listado de notas recientes en un hilo
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
             arrayRecentNotes = data;
-
             NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes);
             rvNoteList.setLayoutManager(new GridLayoutManager(this, screen_width/350));
             rvNoteList.setAdapter(noteCustomAdapter);
@@ -104,21 +106,23 @@ public class MainActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if(requestCode == OPEN_FILE_PROVIDER){
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    if (intent != null && intent.getData() != null) {
+        switch(requestCode){
+            case OPEN_FILE_PROVIDER:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        if (intent != null && intent.getData() != null) {
 
-                        Uri uri = intent.getData();
+                            Uri uri = intent.getData();
 
-                        Intent intentEditor = new Intent(this, EditorActivity.class);
-                        intentEditor.putExtra("@string/extra_intent_uri_file", uri);
-                        startActivity(intentEditor);
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    break;
-            }
+                            Intent intentEditor = new Intent(this, EditorActivity.class);
+                            intentEditor.putExtra("@string/extra_intent_uri_file", uri);
+                            startActivity(intentEditor);
+                        }
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
         }
     }
 

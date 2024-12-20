@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "bloc_de_notas"
+rootProject.name = "notes_app"
 include ':app'

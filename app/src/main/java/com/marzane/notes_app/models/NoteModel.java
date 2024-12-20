@@ -1,15 +1,15 @@
-package com.marzane.bloc_de_notas.models;
+package com.marzane.notes_app.models;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class NoteModel {
+public class NoteModel implements Serializable {
 
     private int id;
     private String title;
-    private LocalDateTime lastEdit;
+    private LocalDateTime lastOpened;
     private Uri path;
     private String realPath;
 
@@ -22,15 +22,15 @@ public class NoteModel {
     }
 
     // constructor only title, lastEdit and path
-    public NoteModel(String titulo, LocalDateTime lastEdit, Uri path) {
-        this.lastEdit = lastEdit;
+    public NoteModel(String titulo, LocalDateTime lastOpened, Uri path) {
+        this.lastOpened = lastOpened;
         this.title = titulo;
         this.path = path;
     }
 
     // complete constructor
     public NoteModel(int id, String titulo, LocalDateTime lastEdit, Uri path, String realPath) {
-        this.lastEdit = lastEdit;
+        this.lastOpened = lastEdit;
         this.id = id;
         this.title = titulo;
         this.path = path;
@@ -41,12 +41,12 @@ public class NoteModel {
         return id;
     }
 
-    public LocalDateTime getLastEdit() {
-        return lastEdit;
+    public LocalDateTime getLastOpened() {
+        return lastOpened;
     }
 
-    public void setlastEdit(LocalDateTime lastEdit) {
-        this.lastEdit = lastEdit;
+    public void setlastOpened(LocalDateTime lastOpened) {
+        this.lastOpened = lastOpened;
     }
 
     public String getTitle() {

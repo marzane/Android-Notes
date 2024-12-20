@@ -1,8 +1,8 @@
-package com.marzane.bloc_de_notas.Threads.task;
+package com.marzane.notes_app.Threads.task;
 
 import android.content.Context;
 
-import com.marzane.bloc_de_notas.repository.RecentNotesRepository;
+import com.marzane.notes_app.repository.RecentNotesRepository;
 
 import java.util.concurrent.Callable;
 
