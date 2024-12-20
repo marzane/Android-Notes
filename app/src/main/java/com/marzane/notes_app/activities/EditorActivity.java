@@ -1,7 +1,11 @@
 package com.marzane.notes_app.activities;
 
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -10,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,11 +40,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private static final int OPEN_FILE_PROVIDER = 1;
     private static final int SAVE_FILE_AS = 2;
+    private static final int NEW_FILE = 3;
+    private static final int CLOSE_APP = 4;
 
     private Intent intent;
-    private final String NOMBRE_POR_DEFECTO = "newFile.txt";
     private String texto;  // el texto que contiene el archivo
     private NoteModel note;
+    private Resources resources;
 
     // layout elements
     private EditText etEditor;
@@ -58,14 +65,19 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         Toolbar toolbar = findViewById(R.id.toolbar_editor);
         setSupportActionBar(toolbar);
 
+        resources = getResources();
+
         handlePathOz = new HandlePathOz(this, this);
 
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
         etEditor.addTextChangedListener(textWatcher);
+        etEditor.requestFocus();
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nueva_nota.txt"
         if(note.getTitle() == null) {
-            note.setTitle(NOMBRE_POR_DEFECTO);
+            note.setTitle(resources.getString(R.string.default_title));
 
             // se muestra el nombre del archivo en la pantalla (textView)
             getSupportActionBar().setTitle(note.getTitle());
@@ -77,7 +89,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                                         // deberia recibir la uri
         if(b!=null)
         {
-            Uri uriFile = (Uri) b.get("@string/extra_intent_uri_file");
+            Uri uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
 
             if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
@@ -100,21 +112,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
-    }
-
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-
-        // TODO: mostrar teclado android automaticamente para escribir en el editText
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
 
@@ -225,6 +222,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.save_file){   // overwrite existing file or create it
+
             if (note.getPath() != null) {
                 texto = etEditor.getText().toString();
                 boolean result = FileUtil.overwriteFile(note.getRealPath(), texto, this);
@@ -235,13 +233,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.close_app){
-            // TODO: cerrar app con mensaje de confirmacion
 
-            this.finishAffinity(); // cierra la app por completo (todas las activities)
+            onCreateDialogClose(resources.getString(R.string.dialog_close_app), resources.getString(R.string.dialog_button_close_app), resources.getString(R.string.dialog_button_cancel), CLOSE_APP).show();
             return true;
 
-        } else if(id == R.id.open_file){
-            openFileIntent();
+        } else if(id == R.id.open_file) {
+            onCreateDialogClose(resources.getString(R.string.dialog_open_file), resources.getString(R.string.dialog_button_open_file), resources.getString(R.string.dialog_button_cancel), OPEN_FILE_PROVIDER).show();
+            return true;
+
+        } else if(id == R.id.new_file_editor){
+            onCreateDialogClose(resources.getString(R.string.dialog_new_file), resources.getString(R.string.dialog_button_new_file), resources.getString(R.string.dialog_button_cancel), NEW_FILE).show();
             return true;
 
         } else {
@@ -284,4 +285,34 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         }
 
     };
+
+
+    public Dialog onCreateDialogClose(String message, String positive, String negative, int action) {
+        // Use the Builder class for convenient dialog construction.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setPositiveButton(positive, (dialog, id) -> {
+                    switch (action){
+                        case CLOSE_APP:
+                            this.finishAffinity();
+                            break;
+                        case OPEN_FILE_PROVIDER:
+                            openFileIntent();
+                            break;
+                        case NEW_FILE:
+                            Intent intentNew = new Intent(this, EditorActivity.class);
+                            startActivity(intentNew);
+                            finish();
+                            break;
+                    }
+
+                })
+                .setNegativeButton(negative, (dialog, id) -> {
+                    // User cancels the dialog.
+                });
+        // Create the AlertDialog object and return it.
+        return builder.create();
+    }
+
+
 }

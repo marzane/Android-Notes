@@ -1,10 +1,13 @@
 package com.marzane.notes_app.adapters;
 
+
+
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,7 +77,7 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         viewHolder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(viewHolder.itemView.getContext(), EditorActivity.class);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.putExtra("@string/extra_intent_uri_file", note.getPath());
+            intent.putExtra("uriFile", note.getPath());
             viewHolder.itemView.getContext().startActivity(intent);
         });
     }

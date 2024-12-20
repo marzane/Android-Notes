@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">Notes</string>
     <string name="extra_intent_uri_file">uriFile</string>
-    <string name="extra_intent_note">note</string>
+    <string name="default_title">newFile.txt</string>
+
+    <string name="dialog_close_app">Unsaved changes will be lost. Close application?</string>
+    <string name="dialog_button_close_app">close app</string>
+    <string name="dialog_button_cancel">cancel</string>
+
+    <string name="dialog_open_file">Unsaved changes will be lost. Open file?</string>
+    <string name="dialog_button_open_file">open</string>
+
+    <string name="dialog_new_file">Unsaved changes will be lost. Create a new file?</string>
+    <string name="dialog_button_new_file">new</string>
 </resources>

@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity{
     private ArrayList<NoteModel> arrayRecentNotes = new ArrayList<>();
     private int screen_width;
     private int screen_height;
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
+        resources = getResources();
+
         rvNoteList = findViewById(R.id.rv_recent_notes);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -64,14 +68,14 @@ public class MainActivity extends AppCompatActivity{
         screen_height = displayMetrics.heightPixels;
         screen_width = displayMetrics.widthPixels;
 
-        Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
 
     }
 
 
     @Override
     protected void onStart() {
-        Toast.makeText(this, "onStart()", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onStart()", Toast.LENGTH_SHORT).show();
 
         // preparando el listado de notas recientes en un hilo
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity{
                             Uri uri = intent.getData();
 
                             Intent intentEditor = new Intent(this, EditorActivity.class);
-                            intentEditor.putExtra("@string/extra_intent_uri_file", uri);
+                            intentEditor.putExtra(resources.getString(R.string.extra_intent_uri_file), uri);
                             startActivity(intentEditor);
                         }
                         break;
@@ -155,7 +159,6 @@ public class MainActivity extends AppCompatActivity{
             openFileIntent();
             return true;
         } else if(id == R.id.close_app){
-            // TODO: cerrar app con mensaje de confirmacion
             this.finishAffinity(); // cierra la app por completo (todas las activities)
             return true;
         } else {

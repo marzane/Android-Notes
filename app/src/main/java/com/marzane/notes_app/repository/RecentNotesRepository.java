@@ -151,10 +151,10 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
             };
 
             // How you want the results sorted in the resulting Cursor
-        /*
+
         String sortOrder =
                 recentNoteTable.COLUMN_NAME_LASTEDIT + " DESC";
-         */
+
 
             Cursor cursor = db.query(
                     recentNoteTable.TABLE_NAME,   // The table to query
@@ -163,11 +163,8 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
                     null,                   // The values for the WHERE clause
                     null,                   // don't group the rows
                     null,                   // don't filter by row groups
-                    null                    // The sort order
+                    sortOrder               // The sort order
             );
-
-
-
 
             while (cursor.moveToNext()) {
                 int itemId = cursor.getInt(cursor.getColumnIndexOrThrow(recentNoteTable._ID));

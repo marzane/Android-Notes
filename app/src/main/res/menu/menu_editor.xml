@@ -19,7 +19,7 @@
         android:title="open"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/new_file"
+    <item android:id="@+id/new_file_editor"
         android:title="new"
         android:icon="@drawable/file_add"
         app:showAsAction="never"/>
