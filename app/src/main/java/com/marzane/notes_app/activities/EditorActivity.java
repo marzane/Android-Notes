@@ -2,10 +2,10 @@ package com.marzane.notes_app.activities;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.marzane.notes_app.ActionValues;
+import com.marzane.notes_app.customDialogs.CustomDialogClass;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
@@ -37,11 +39,6 @@ import br.com.onimur.handlepathoz.HandlePathOzListener;
 import br.com.onimur.handlepathoz.model.PathOz;
 
 public class EditorActivity extends AppCompatActivity implements HandlePathOzListener.SingleUri{
-
-    private static final int OPEN_FILE_PROVIDER = 1;
-    private static final int SAVE_FILE_AS = 2;
-    private static final int NEW_FILE = 3;
-    private static final int CLOSE_APP = 4;
 
     private Intent intent;
     private String texto;  // el texto que contiene el archivo
@@ -64,6 +61,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         // initialize toolbar
         Toolbar toolbar = findViewById(R.id.toolbar_editor);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
+
 
         resources = getResources();
 
@@ -72,8 +72,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
         etEditor.addTextChangedListener(textWatcher);
         etEditor.requestFocus();
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nueva_nota.txt"
         if(note.getTitle() == null) {
@@ -100,12 +98,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
                 if(texto == null){
                     taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
-                        Toast.makeText(this, dataResult + "", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, dataResult + "", Toast.LENGTH_LONG).show();
                     });
-                    finish();                                                  // close this activity
+                    //finish();     // close this activity
                 } else {
                     etEditor.setText(texto);
                     handlePathOz.getRealPath(uriFile);
+
+                    //show keyboard
+                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
 
             }
@@ -126,7 +128,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, note.getPath());
         }
 
-        startActivityForResult(intent, SAVE_FILE_AS);
+        startActivityForResult(intent, ActionValues.SAVE_FILE_AS.getID());
     }
 
 
@@ -134,7 +136,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        if (requestCode == SAVE_FILE_AS) {  // si lo que se ha hecho es crear un archivo
+        if (requestCode == ActionValues.SAVE_FILE_AS.getID()) {  // si lo que se ha hecho es crear un archivo
             texto = etEditor.getText().toString();
             switch (resultCode) {
                 case Activity.RESULT_OK:
@@ -156,7 +158,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 case Activity.RESULT_CANCELED:
                     break;
             }
-        } else if(requestCode == OPEN_FILE_PROVIDER){
+        } else if(requestCode == ActionValues.OPEN_FILE_PROVIDER.getID()){
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     if (intent != null && intent.getData() != null) {
@@ -234,36 +236,32 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if (id == R.id.close_app){
 
-            onCreateDialogClose(resources.getString(R.string.dialog_close_app), resources.getString(R.string.dialog_button_close_app), resources.getString(R.string.dialog_button_cancel), CLOSE_APP).show();
+            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
             return true;
 
         } else if(id == R.id.open_file) {
-            onCreateDialogClose(resources.getString(R.string.dialog_open_file), resources.getString(R.string.dialog_button_open_file), resources.getString(R.string.dialog_button_cancel), OPEN_FILE_PROVIDER).show();
+            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
             return true;
 
         } else if(id == R.id.new_file_editor){
-            onCreateDialogClose(resources.getString(R.string.dialog_new_file), resources.getString(R.string.dialog_button_new_file), resources.getString(R.string.dialog_button_cancel), NEW_FILE).show();
+            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
             return true;
 
+        } else if(id == android.R.id.home){
+            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_FILE.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
 
-    }
-
-
-    // open file button listener
-    public void openFileIntent() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // cargar el selector de archivos
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        // opcional, especifica la ubicacion que deberia abrirse al crear el archivo
-        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-
-        startActivityForResult(intent, MainActivity.OPEN_FILE_PROVIDER);
     }
 
 
@@ -287,32 +285,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     };
 
 
-    public Dialog onCreateDialogClose(String message, String positive, String negative, int action) {
-        // Use the Builder class for convenient dialog construction.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message)
-                .setPositiveButton(positive, (dialog, id) -> {
-                    switch (action){
-                        case CLOSE_APP:
-                            this.finishAffinity();
-                            break;
-                        case OPEN_FILE_PROVIDER:
-                            openFileIntent();
-                            break;
-                        case NEW_FILE:
-                            Intent intentNew = new Intent(this, EditorActivity.class);
-                            startActivity(intentNew);
-                            finish();
-                            break;
-                    }
-
-                })
-                .setNegativeButton(negative, (dialog, id) -> {
-                    // User cancels the dialog.
-                });
-        // Create the AlertDialog object and return it.
-        return builder.create();
-    }
 
 
 }

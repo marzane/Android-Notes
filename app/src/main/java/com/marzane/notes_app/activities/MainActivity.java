@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,10 +31,13 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.task.ListAllNotesTask;
 import com.marzane.notes_app.Threads.TaskRunner;
+import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
+import com.marzane.notes_app.customDialogs.CustomDialogClass;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.util.ArrayList;
@@ -40,21 +45,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
-    public static final int OPEN_FILE_PROVIDER = 1;
-
     private TaskRunner taskRunner = new TaskRunner();
     private RecyclerView rvNoteList;
     private ArrayList<NoteModel> arrayRecentNotes = new ArrayList<>();
     private int screen_width;
     private int screen_height;
     private Resources resources;
+    private CustomDialogClass cdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(!checkStoragePermissions()) requestForStoragePermissions();
+        //if(!checkStoragePermissions()) requestForStoragePermissions();
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -68,16 +72,12 @@ public class MainActivity extends AppCompatActivity{
         screen_height = displayMetrics.heightPixels;
         screen_width = displayMetrics.widthPixels;
 
-        //Toast.makeText(this, "onCreate", Toast.LENGTH_SHORT).show();
-
     }
 
 
     @Override
     protected void onStart() {
-        //Toast.makeText(this, "onStart()", Toast.LENGTH_SHORT).show();
-
-        // preparando el listado de notas recientes en un hilo
+        // initialize recent notes list
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
             arrayRecentNotes = data;
             NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes);
@@ -90,28 +90,11 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-
-    // open file button listener
-    public void openFileIntent() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // cargar el selector de archivos
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        // opcional, especifica la ubicacion que deberia abrirse al crear el archivo
-        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-
-        startActivityForResult(intent, OPEN_FILE_PROVIDER);
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
-        switch(requestCode){
-            case OPEN_FILE_PROVIDER:
+        if(requestCode == ActionValues.OPEN_FILE_PROVIDER.getID()){
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         if (intent != null && intent.getData() != null) {
@@ -126,7 +109,6 @@ public class MainActivity extends AppCompatActivity{
                     case Activity.RESULT_CANCELED:
                         break;
                 }
-                break;
         }
     }
 
@@ -156,32 +138,22 @@ public class MainActivity extends AppCompatActivity{
             loadEditorView();
             return true;
         } else if (id == R.id.open_file) {
-            openFileIntent();
+            FileUtil.openFileIntent(this);
             return true;
         } else if(id == R.id.close_app){
             this.finishAffinity(); // cierra la app por completo (todas las activities)
             return true;
-        } else {
+        } else if(id == R.id.clear_list){
+            cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+            return true;
+        }else{
             return super.onOptionsItemSelected(item);
         }
-        /*
-        switch (item.getItemId()) {
-            case R.id.open_file:
-                openFileIntent();
-                return true;
 
-            case R.id.new_file:
-                loadEditorView();
-                return true;
-
-            default:
-                // The user's action isn't recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-        */
     }
+
 
     // - STORAGE PERMISSIONS -
     // https://medium.com/@kezzieleo/manage-external-storage-permission-android-studio-java-9c3554cf79a7

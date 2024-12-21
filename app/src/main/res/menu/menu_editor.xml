@@ -4,28 +4,29 @@
     <item
         android:id="@+id/save_file"
         android:icon="@drawable/file_save"
-        android:title="save file"
+        android:title="@string/menu_save_file"
         app:showAsAction="ifRoom"/>
 
     <!--overflow. -->
 
     <item android:id="@+id/save_file_as"
-        android:title="save as"
+        android:title="@string/menu_save_as"
         android:icon="@drawable/open_folder"
         app:showAsAction="never"/>
 
     <item android:id="@+id/open_file"
         android:icon="@drawable/open_folder"
-        android:title="open"
+        android:title="@string/menu_open_file"
         app:showAsAction="never"/>
 
     <item android:id="@+id/new_file_editor"
-        android:title="new"
+        android:title="@string/menu_new_file"
         android:icon="@drawable/file_add"
         app:showAsAction="never"/>
 
+
     <item android:id="@+id/close_app"
-        android:title="close app"
+        android:title="@string/menu_close_app"
         android:icon="@drawable/close_app"
         app:showAsAction="never"/>
 

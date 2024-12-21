@@ -1,22 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- "Mark Favorite", must appear as action button if possible. -->
     <item
         android:id="@+id/open_file"
         android:icon="@drawable/open_folder"
-        android:title="open file"
+        android:title="@string/menu_open_file"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/new_file"
         android:icon="@drawable/file_add"
-        android:title="new file"
+        android:title="@string/menu_new_file"
         app:showAsAction="ifRoom"/>
 
-    <!-- Settings, must always be in the overflow. -->
+    <!-- overflow -->
+    <item android:id="@+id/clear_list"
+        android:title="@string/menu_clear_list"
+        android:icon="@drawable/delete"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/close_app"
-        android:title="close app"
+        android:title="@string/menu_close_app"
         android:icon="@drawable/close_app"
         app:showAsAction="never"/>
 

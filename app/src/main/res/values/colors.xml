@@ -8,4 +8,5 @@
     <color name="darkBrown">#1E1E19</color>
     <color name="yellow">#ECE88A</color>
     <color name="lightOrange">#F2BF62</color>
+    <color name="transparent">#00000000</color>
 </resources>

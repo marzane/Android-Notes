@@ -23,6 +23,7 @@
         <item name="android:background">#00000000</item>
         <item name="android:inputType">textMultiLine</item>
         <item name="android:textColor">@color/darkBrown</item>
+        <item name="android:textSize">17dp</item>
     </style>
 
     <style name="rv_note_item">
@@ -38,5 +39,36 @@
         <item name="android:textColor">@color/darkBrown</item>
     </style>
 
+    <style name="animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <!-- dialogs -->
+    <style name="dialog_main">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/shape_item</item>
+        <item name="android:minHeight">200dp</item>
+    </style>
+
+    <style name="dialog_message">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">40</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="dialog_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
 
 </resources>
