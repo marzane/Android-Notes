@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notes</string>
+    <string name="app_name">Sticky </string>
     <string name="extra_intent_uri_file">uriFile</string>
 
     <!-- default new file name -->

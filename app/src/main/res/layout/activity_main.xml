@@ -13,7 +13,7 @@
         android:id="@+id/toolbar_main"
         style="@style/barraSuperior"
         android:elevation="4dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
