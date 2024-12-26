@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/dialog_main">
+
+    <TextView
+        android:id="@+id/tv_dialog"
+        style="@style/dialog_message"
+        android:text="this is the file.txt"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_marginBottom="5dp">
+
+        <LinearLayout
+            android:id="@+id/button_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="30"
+            android:orientation="vertical">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/arrow_left_48px"
+                android:layout_gravity="center"/>
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="back" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/pencil_48px"
+                android:layout_gravity="center"/>
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="edit" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_open_dir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/folder_48px"
+                android:layout_gravity="center"/>
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="open directory" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/button_delete_from_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30"
+            android:layout_marginBottom="5dp">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/recycle_bin_48px"
+                android:layout_gravity="center"/>
+
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_delete_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/remove_48px"
+                android:layout_gravity="center"/>
+
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="remove from list"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

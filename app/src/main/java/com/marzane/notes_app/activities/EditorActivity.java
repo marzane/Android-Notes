@@ -30,6 +30,7 @@ import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
 import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.time.LocalDateTime;
@@ -247,8 +248,18 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             cdd.show();
             return true;
 
-        } else if(id == R.id.new_file_editor){
+        } else if(id == R.id.new_file_editor) {
             CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+            return true;
+
+        } else if (id == R.id.file_info){
+            String info = note.getTitle() + "\n\n" +
+                          resources.getString(R.string.dialog_directory) + "\n" + note.getRealPath() +
+                            "s\n" + "aa\n" + "a\n" + "s\n" + "\nsd\nds\n\n\nfd\n\ndgd\nk\nl\nk\nj\nj\ns\nj\nj\nj\nj";
+
+            CustomDialogInformation cdd = new CustomDialogInformation(this, info, ActionValues.NOACTION.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;

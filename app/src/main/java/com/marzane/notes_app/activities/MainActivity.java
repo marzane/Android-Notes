@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity{
         // initialize recent notes list
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
             arrayRecentNotes = data;
-            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes);
+            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes, MainActivity.this);
             rvNoteList.setLayoutManager(new GridLayoutManager(this, screen_width/350));
             rvNoteList.setAdapter(noteCustomAdapter);
 

@@ -5,29 +5,41 @@
         android:id="@+id/save_file"
         android:icon="@drawable/file_save"
         android:title="@string/menu_save_file"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <!--overflow. -->
+    <item
+        android:id="@+id/popup_menu"
+        android:icon="@drawable/popup_menu"
+        android:title="@string/menu_save_file"
+        app:showAsAction="always">
 
-    <item android:id="@+id/save_file_as"
-        android:title="@string/menu_save_as"
-        android:icon="@drawable/open_folder"
-        app:showAsAction="never"/>
+        <menu>
+            <item android:id="@+id/save_file_as"
+                android:title="submenu"
+                android:icon="@drawable/open_folder"
+                app:showAsAction="always"/>
 
-    <item android:id="@+id/open_file"
-        android:icon="@drawable/open_folder"
-        android:title="@string/menu_open_file"
-        app:showAsAction="never"/>
+            <item android:id="@+id/open_file"
+                android:icon="@drawable/open_folder"
+                android:title="@string/menu_open_file"
+                app:showAsAction="always"/>
 
-    <item android:id="@+id/new_file_editor"
-        android:title="@string/menu_new_file"
-        android:icon="@drawable/file_add"
-        app:showAsAction="never"/>
+            <item android:id="@+id/new_file_editor"
+                android:title="@string/menu_new_file"
+                android:icon="@drawable/file_add"
+                app:showAsAction="always"/>
 
+            <item android:id="@+id/file_info"
+                android:title="@string/menu_file_info"
+                android:icon="@drawable/document"
+                app:showAsAction="always"/>
 
-    <item android:id="@+id/close_app"
-        android:title="@string/menu_close_app"
-        android:icon="@drawable/close_app"
-        app:showAsAction="never"/>
+            <item android:id="@+id/close_app"
+                android:title="@string/menu_close_app"
+                android:icon="@drawable/close_app"
+                app:showAsAction="always"/>
+        </menu>
+    </item>
 
 </menu>

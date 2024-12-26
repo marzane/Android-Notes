@@ -45,6 +45,8 @@ public class CustomDialogInformation extends Dialog implements View.OnClickListe
     public void onClick(View v) {
         if(action == ActionValues.CLOSE_ACTIVITY.getID()) {
             c.finish();
+        } else {
+            dismiss();
         }
     }
 }

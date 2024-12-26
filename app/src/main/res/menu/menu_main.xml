@@ -5,23 +5,31 @@
         android:id="@+id/open_file"
         android:icon="@drawable/open_folder"
         android:title="@string/menu_open_file"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/new_file"
         android:icon="@drawable/file_add"
         android:title="@string/menu_new_file"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <!-- overflow -->
-    <item android:id="@+id/clear_list"
-        android:title="@string/menu_clear_list"
-        android:icon="@drawable/delete"
-        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_menu"
+        android:icon="@drawable/popup_menu"
+        android:title="submenu"
+        app:showAsAction="always">
+        <menu>
+            <item android:id="@+id/clear_list"
+                android:title="@string/menu_clear_list"
+                android:icon="@drawable/recycle_bin"
+                app:showAsAction="always"/>
 
-    <item android:id="@+id/close_app"
-        android:title="@string/menu_close_app"
-        android:icon="@drawable/close_app"
-        app:showAsAction="never"/>
+            <item android:id="@+id/close_app"
+                android:title="@string/menu_close_app"
+                android:icon="@drawable/close_app"
+                app:showAsAction="always"/>
+        </menu>
+    </item>
 
 </menu>

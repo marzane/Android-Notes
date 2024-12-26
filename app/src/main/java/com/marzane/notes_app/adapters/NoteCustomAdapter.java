@@ -1,19 +1,21 @@
 package com.marzane.notes_app.adapters;
 
-
-
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Utils.DateUtil;
 import com.marzane.notes_app.activities.EditorActivity;
+import com.marzane.notes_app.customDialogs.CustomDialogFileOptions;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.ViewHolder> {
 
     private ArrayList<NoteModel> noteList;
+    private Activity activity;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -48,8 +51,9 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
     }
 
 
-    public NoteCustomAdapter(ArrayList<NoteModel> noteList) {
+    public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity) {
         this.noteList = noteList;
+        this.activity = activity;
     }
 
     // Create new views (invoked by the layout manager)
@@ -79,6 +83,14 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.putExtra("uriFile", note.getPath());
             viewHolder.itemView.getContext().startActivity(intent);
+        });
+
+        viewHolder.itemView.setOnLongClickListener(view -> {
+            //Toast.makeText(viewHolder.itemView.getContext(), "long press ok", Toast.LENGTH_SHORT).show();
+            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note.getTitle(), note);
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+            return true;
         });
     }
 
