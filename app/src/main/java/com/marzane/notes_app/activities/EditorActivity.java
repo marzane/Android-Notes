@@ -30,6 +30,7 @@ import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
 import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.models.NoteModel;
 
@@ -255,11 +256,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.file_info){
-            String info = note.getTitle() + "\n\n" +
-                          resources.getString(R.string.dialog_directory) + "\n" + note.getRealPath() +
-                            "s\n" + "aa\n" + "a\n" + "s\n" + "\nsd\nds\n\n\nfd\n\ndgd\nk\nl\nk\nj\nj\ns\nj\nj\nj\nj";
-
-            CustomDialogInformation cdd = new CustomDialogInformation(this, info, ActionValues.NOACTION.getID());
+            CustomDialogFileInfo cdd = new CustomDialogFileInfo(this, note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;

@@ -26,7 +26,7 @@
                 android:layout_gravity="center"/>
             <TextView
                 style="@style/dialog_text_option"
-                android:text="back" />
+                android:text="@string/dialog_option_back" />
         </LinearLayout>
 
         <LinearLayout
@@ -41,23 +41,24 @@
                 android:layout_gravity="center"/>
             <TextView
                 style="@style/dialog_text_option"
-                android:text="edit" />
+                android:text="@string/dialog_option_edit" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/button_open_dir"
+            android:id="@+id/button_file_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="30">
             <ImageView
                 style="@style/dialog_button"
-                android:src="@drawable/folder_48px"
+                android:src="@drawable/document_48px"
                 android:layout_gravity="center"/>
             <TextView
                 style="@style/dialog_text_option"
-                android:text="open directory" />
+                android:text="@string/dialog_option_info" />
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -67,7 +68,7 @@
         android:padding="10dp">
 
         <LinearLayout
-            android:id="@+id/button_delete_from_list"
+            android:id="@+id/button_delete_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -80,11 +81,11 @@
 
             <TextView
                 style="@style/dialog_text_option"
-                android:text="delete" />
+                android:text="@string/dialog_option_delete_file" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/button_delete_file"
+            android:id="@+id/button_delete_from_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -96,7 +97,7 @@
 
             <TextView
                 style="@style/dialog_text_option"
-                android:text="remove from list"/>
+                android:text="@string/dialog_option_remove_from_list"/>
         </LinearLayout>
 
     </LinearLayout>

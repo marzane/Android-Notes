@@ -16,7 +16,7 @@
 
         <menu>
             <item android:id="@+id/save_file_as"
-                android:title="submenu"
+                android:title="@string/menu_save_as"
                 android:icon="@drawable/open_folder"
                 app:showAsAction="always"/>
 

@@ -10,7 +10,8 @@ public enum ActionValues {
     CLOSE_ACTIVITY(5),
     CLEAR_LIST(6),
     CLOSE_FILE(7),
-    SHOW_FILE_INFO(8);
+    REMOVE_FROM_LIST(8),
+    DELETE_FILE(9);
 
     private int id;
 

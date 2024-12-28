@@ -26,7 +26,7 @@ public class CustomDialogClass extends Dialog implements android.view.View.OnCli
     public String message;
     public int action;
 
-    public CustomDialogClass(Activity a, String message, int action) {
+    public CustomDialogClass(Activity a, String message, int action ) {
         super(a);
         this.activity = a;
         this.message = message;

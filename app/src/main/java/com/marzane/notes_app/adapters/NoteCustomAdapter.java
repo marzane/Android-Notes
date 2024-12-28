@@ -24,6 +24,7 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
 
     private ArrayList<NoteModel> noteList;
     private Activity activity;
+    private Resources resources;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -51,9 +52,10 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
     }
 
 
-    public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity) {
+    public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity, Resources resources) {
         this.noteList = noteList;
         this.activity = activity;
+        this.resources = resources;
     }
 
     // Create new views (invoked by the layout manager)
@@ -81,13 +83,12 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         viewHolder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(viewHolder.itemView.getContext(), EditorActivity.class);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.putExtra("uriFile", note.getPath());
+            intent.putExtra(resources.getString(R.string.extra_intent_uri_file), note.getPath());
             viewHolder.itemView.getContext().startActivity(intent);
         });
 
         viewHolder.itemView.setOnLongClickListener(view -> {
-            //Toast.makeText(viewHolder.itemView.getContext(), "long press ok", Toast.LENGTH_SHORT).show();
-            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note.getTitle(), note);
+            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note, resources);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;

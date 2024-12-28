@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
@@ -24,16 +23,16 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
     private TaskRunner taskRunner;
 
     public Activity activity;
-    public LinearLayout back, edit, openDir, removeList, delete;
+    public LinearLayout back, edit, info, removeList, delete;
     public TextView tvMessage;
-    public String message;
     public NoteModel note;
+    public  Resources resources;
 
-    public CustomDialogFileOptions(Activity a, String message, NoteModel note) {
+    public CustomDialogFileOptions(Activity a, NoteModel note, Resources resources) {
         super(a);
         this.activity = a;
-        this.message = message;
         this.note = note;
+        this.resources = resources;
         //taskRunner = new TaskRunner();
     }
 
@@ -46,16 +45,16 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
         tvMessage = findViewById(R.id.tv_dialog);
         back = findViewById(R.id.button_back);
         edit = findViewById(R.id.button_edit);
-        openDir = findViewById(R.id.button_open_dir);
+        info = findViewById(R.id.button_file_info);
         removeList = findViewById(R.id.button_delete_from_list);
         delete = findViewById(R.id.button_delete_file);
 
         back.setOnClickListener(this);
         edit.setOnClickListener(this);
-        openDir.setOnClickListener(this);
+        info.setOnClickListener(this);
         removeList.setOnClickListener(this);
         delete.setOnClickListener(this);
-        tvMessage.setText(message);
+        tvMessage.setText(note.getTitle());
     }
 
     @Override
@@ -65,37 +64,28 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
 
         if(id == R.id.button_back){
             dismiss();
+
         } else if(id == R.id.button_edit){
             Intent intent = new Intent(activity, EditorActivity.class);
-            intent.putExtra("uriFile", note.getPath());
+            intent.putExtra(resources.getString(R.string.extra_intent_uri_file), note.getPath());
             activity.startActivity(intent);
 
-        } else if(id == R.id.button_open_dir){
-            // Construct an intent for opening a folder
-            try{
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setDataAndType(note.getPath(), "resource/folder");
-                activity.startActivity(intent);
-            }catch (Exception e){
-                CustomDialogInformation cdd = new CustomDialogInformation(activity, "Unable to open directory: \n" + e.getMessage(), ActionValues.NOACTION.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
-            }
+        } else if(id == R.id.button_file_info){
+            CustomDialogFileInfo cdd = new CustomDialogFileInfo(activity, note);
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
 
-            /*
-            // Check that there is an app activity handling that intent on our system
-            if (intent.resolveActivityInfo(activity.getPackageManager(), 0) != null) {
-                // Yes there is one start it then
-                activity.startActivity(intent);
-            } else {
-                // Did not find any activity capable of handling that intent on our system
-                // TODO: Display error message or something
-                Toast.makeText(activity, "error", Toast.LENGTH_SHORT).show();
-            }*/
         } else if(id == R.id.button_delete_from_list){
-            dismiss();
+            String message = resources.getString(R.string.dialog_remove_from_list);
+            CustomDialogYesNoFileInfo cdd = new CustomDialogYesNoFileInfo(activity, message, ActionValues.REMOVE_FROM_LIST.getID(), note);
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+
         } else if (id == R.id.button_delete_file) {
-            dismiss();
+            String message = resources.getString(R.string.dialog_delete_file);
+            CustomDialogYesNoFileInfo cdd = new CustomDialogYesNoFileInfo(activity, message, ActionValues.DELETE_FILE.getID(), note);
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
         }
 
         dismiss();

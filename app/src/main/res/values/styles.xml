@@ -12,10 +12,6 @@
         <item name="android:background">@color/yellow</item>
     </style>
 
-    <style name="pagina">
-        <item name="android:background">@drawable/rayas_repeat</item>
-    </style>
-
     <style name="input_editor">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -78,6 +74,19 @@
         <item name="android:textSize">15dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="dialog_edit_none">
+        <item name="android:inputType">none</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:padding">13dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:background">@drawable/shape_item_input_dialog</item>
     </style>
 
 </resources>

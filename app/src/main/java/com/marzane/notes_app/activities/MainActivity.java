@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //if(!checkStoragePermissions()) requestForStoragePermissions();
+        if(!checkStoragePermissions()) requestForStoragePermissions();
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity{
         // initialize recent notes list
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
             arrayRecentNotes = data;
-            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes, MainActivity.this);
+            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes, MainActivity.this, resources);
             rvNoteList.setLayoutManager(new GridLayoutManager(this, screen_width/350));
             rvNoteList.setAdapter(noteCustomAdapter);
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/dialog_main">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="10dp">
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/dialog_message"
+                    android:text="File"/>
+                <ImageButton
+                    android:id="@+id/ib_copy_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/file_copy_32px"
+                    android:background="@color/transparent"
+                    android:layout_gravity="bottom" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_title"
+                style="@style/dialog_edit_none"
+                android:inputType="none"
+                android:focusable="false"
+                android:text="newFile.txt"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="10dp">
+                <TextView
+                    android:id="@+id/tv_location"
+                    style="@style/dialog_message"
+                    android:text="Location"/>
+                <ImageButton
+                    android:id="@+id/ib_copy_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/file_copy_32px"
+                    android:background="@color/transparent"
+                    android:layout_gravity="bottom" />
+        </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_location"
+                style="@style/dialog_edit_none"
+                android:inputType="none"
+                android:focusable="false"
+                android:text="storage/directory1/subdirectory/newFile.txt"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/button_accept"
+            style="@style/dialog_button"
+            android:src="@drawable/accept"
+            android:layout_weight="50"/>
+
+    </LinearLayout>
+
+</LinearLayout>
