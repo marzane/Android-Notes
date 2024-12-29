@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.marzane.notes_app.MyClipboardManager;
+import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.models.NoteModel;
 

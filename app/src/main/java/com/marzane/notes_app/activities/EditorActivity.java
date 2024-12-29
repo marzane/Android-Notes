@@ -1,6 +1,5 @@
 package com.marzane.notes_app.activities;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -12,7 +11,6 @@ import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -21,9 +19,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.marzane.notes_app.ActionValues;
+import com.marzane.notes_app.Utils.MyClipboardManager;
+import com.marzane.notes_app.Utils.TextViewUndoRedo;
 import com.marzane.notes_app.customDialogs.CustomDialogClass;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
@@ -31,7 +32,6 @@ import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
 import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
-import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.time.LocalDateTime;
@@ -46,6 +46,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private String texto;  // el texto que contiene el archivo
     private NoteModel note;
     private Resources resources;
+    private TextViewUndoRedo textViewUndoRedo;
+    private MyClipboardManager myClipboardManager = new MyClipboardManager();
 
     // layout elements
     private EditText etEditor;
@@ -61,11 +63,10 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         note = new NoteModel();
 
         // initialize toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar_editor);
-        setSupportActionBar(toolbar);
+        Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
+        setSupportActionBar(toolbarTop);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
-
 
         resources = getResources();
 
@@ -74,6 +75,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
         etEditor.addTextChangedListener(textWatcher);
         etEditor.requestFocus();
+        textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nueva_nota.txt"
         if(note.getTitle() == null) {
@@ -206,7 +208,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     }
 
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -215,13 +217,31 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         return super.onCreateOptionsMenu(menu);
     }
 
+ */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the toolbar menu
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
+
+        // Inflate and initialize the bottom menu
+        ActionMenuView bottomBar = findViewById(R.id.bottom_tools);
+        Menu bottomMenu = bottomBar.getMenu();
+        getMenuInflater().inflate(R.menu.menu_tools_editor, bottomMenu);
+        for (int i = 0; i < bottomMenu.size(); i++) {
+            bottomMenu.getItem(i).setOnMenuItemClickListener(this::onOptionsItemSelected);
+        }
+
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
 
-        if(id == R.id.save_file_as){  // save as
+        if (id == R.id.save_file_as){  // save as
             saveFileAs();
             return true;
 
@@ -236,26 +256,26 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             }
             return true;
 
-        } else if (id == R.id.close_app){
+        } else if (id == R.id.close_app){  // close app
 
             CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
 
-        } else if(id == R.id.open_file) {
+        } else if(id == R.id.open_file) {  // open file
             CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
 
-        } else if(id == R.id.new_file_editor) {
+        } else if(id == R.id.new_file_editor) {  // new file
             CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
 
-        } else if (id == R.id.file_info){
+        } else if (id == R.id.file_info){  // shows file info
             CustomDialogFileInfo cdd = new CustomDialogFileInfo(this, note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
@@ -266,6 +286,50 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
+
+            // text tools (bottom toolbar)
+        } else if(id == R.id.button_undo) {  // undo
+            textViewUndoRedo.undo();
+            return true;
+
+        } else if(id == R.id.button_redo) {  // redo
+            textViewUndoRedo.redo();
+            return true;
+
+        } else if (id == R.id.button_cut) {  // cut
+            int start = etEditor.getSelectionStart();
+            int end = etEditor.getSelectionEnd();
+            texto = etEditor.getText().toString();
+
+            String cut = texto.substring(start, end);
+            myClipboardManager.copyToClipboard(this, cut);
+
+            String newText = texto.substring(0,start) + texto.substring(end);
+            etEditor.setText(newText);
+            etEditor.setSelection(start);
+            return true;
+
+        } else if(id == R.id.button_copy) {  // copy
+            int start = etEditor.getSelectionStart();
+            int end = etEditor.getSelectionEnd();
+            texto = etEditor.getText().toString();
+
+            Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
+            if (r) Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if(id == R.id.button_paste) {  // paste
+            String paste = myClipboardManager.readFromClipboard(this);
+            int start = etEditor.getSelectionStart();
+            int end = etEditor.getSelectionEnd();
+            texto = etEditor.getText().toString();
+
+            String newText = texto.substring(0,start) + paste + texto.substring(end);
+            etEditor.setText(newText);
+            etEditor.setSelection(end + paste.length());
+
+            return true;
+
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -291,8 +355,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         }
 
     };
-
-
 
 
 }

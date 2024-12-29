@@ -8,6 +8,13 @@
         <item name="android:background">@drawable/barra_superior_fondo_repeat</item>
     </style>
 
+    <style name="toolsEditor">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/barra_superior_fondo_repeat</item>
+    </style>
+
     <style name="fondoPantalla">
         <item name="android:background">@color/yellow</item>
     </style>

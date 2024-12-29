@@ -18,7 +18,8 @@
 <!-- https://www.develou.com/scrollview-en-android/ -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="80">
 
         <EditText
             style="@style/input_editor"
@@ -27,5 +28,11 @@
             android:id="@+id/et_editor"
             />
     </ScrollView>
+
+    <androidx.appcompat.widget.ActionMenuView
+        android:id="@+id/bottom_tools"
+        style="@style/toolsEditor"
+        android:windowActionBarOverlay="true"
+        android:elevation="4dp" />
 
 </LinearLayout>

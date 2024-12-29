@@ -1,0 +1,35 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/button_cut"
+        android:icon="@drawable/document_32px"
+        android:title="cut"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_copy"
+        android:icon="@drawable/file_copy_32px"
+        android:title="copy"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_paste"
+        android:icon="@drawable/paste_32px"
+        android:title="paste"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_undo"
+        android:icon="@drawable/undo_32px"
+        android:title="undo"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_redo"
+        android:icon="@drawable/redo_32px"
+        android:title="redo"
+        app:showAsAction="always" />
+
+
+</menu>
