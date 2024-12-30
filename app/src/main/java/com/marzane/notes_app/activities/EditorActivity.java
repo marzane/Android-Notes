@@ -51,6 +51,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     // layout elements
     private EditText etEditor;
+    private MenuItem saveButton;
 
     private static HandlePathOz handlePathOz;
     private static TaskRunner taskRunner = new TaskRunner();
@@ -118,6 +119,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
+        textViewUndoRedo = new TextViewUndoRedo(etEditor);
+
     }
 
 
@@ -151,11 +154,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                        if(note.getRealPath() == null){
+                        if(note.getRealPath() != null){
                             FileUtil.writeFile(note.getPath(), texto, this);
                         } else {
                             FileUtil.overwriteFile(note.getRealPath(), texto, this);
                         }
+
+                        saveButton.setIcon(R.drawable.file_save);
 
                     }
                     break;
@@ -208,21 +213,12 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     }
 
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_editor, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
- */
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the toolbar menu
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+
+        saveButton = menu.findItem(R.id.save_file);
 
         // Inflate and initialize the bottom menu
         ActionMenuView bottomBar = findViewById(R.id.bottom_tools);
@@ -250,7 +246,10 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             if (note.getPath() != null) {
                 texto = etEditor.getText().toString();
                 boolean result = FileUtil.overwriteFile(note.getRealPath(), texto, this);
-                if(result) getSupportActionBar().setTitle(note.getTitle());
+                if(result) {
+                    getSupportActionBar().setTitle(note.getTitle());
+                    saveButton.setIcon(R.drawable.file_save);
+                }
             } else {
                 saveFileAs();
             }
@@ -297,36 +296,37 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.button_cut) {  // cut
-            int start = etEditor.getSelectionStart();
-            int end = etEditor.getSelectionEnd();
-            texto = etEditor.getText().toString();
+             int start = Math.max(etEditor.getSelectionStart(), 0);
+             int end = Math.max(etEditor.getSelectionEnd(), 0);
+             if(start != end){
+                 Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
+                 etEditor.getText().replace(Math.min(start, end), Math.max(start, end), "", 0, 0);
+             }
 
-            String cut = texto.substring(start, end);
-            myClipboardManager.copyToClipboard(this, cut);
-
-            String newText = texto.substring(0,start) + texto.substring(end);
-            etEditor.setText(newText);
-            etEditor.setSelection(start);
             return true;
 
         } else if(id == R.id.button_copy) {  // copy
             int start = etEditor.getSelectionStart();
             int end = etEditor.getSelectionEnd();
-            texto = etEditor.getText().toString();
 
-            Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
-            if (r) Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
+            if( start != end){
+                texto = etEditor.getText().toString();
+
+                Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
+                if (r) Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
+            }
+
             return true;
 
         } else if(id == R.id.button_paste) {  // paste
             String paste = myClipboardManager.readFromClipboard(this);
-            int start = etEditor.getSelectionStart();
-            int end = etEditor.getSelectionEnd();
-            texto = etEditor.getText().toString();
+            if (!paste.isEmpty()){
+                int start = Math.max(etEditor.getSelectionStart(), 0);
+                int end = Math.max(etEditor.getSelectionEnd(), 0);
 
-            String newText = texto.substring(0,start) + paste + texto.substring(end);
-            etEditor.setText(newText);
-            etEditor.setSelection(end + paste.length());
+                etEditor.getText().replace(Math.min(start, end), Math.max(start, end), paste, 0, paste.length());
+
+            }
 
             return true;
 
@@ -338,6 +338,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     TextWatcher textWatcher = new TextWatcher() {
+
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -346,7 +347,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             getSupportActionBar().setTitle(note.getTitle() + "*");
-
+            if(saveButton != null) saveButton.setIcon(R.drawable.file_unsaved);
         }
 
         @Override
