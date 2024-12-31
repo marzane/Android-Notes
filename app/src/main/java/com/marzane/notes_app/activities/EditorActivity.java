@@ -299,6 +299,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
              int start = Math.max(etEditor.getSelectionStart(), 0);
              int end = Math.max(etEditor.getSelectionEnd(), 0);
              if(start != end){
+                 texto = etEditor.getText().toString();
                  Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
                  etEditor.getText().replace(Math.min(start, end), Math.max(start, end), "", 0, 0);
              }

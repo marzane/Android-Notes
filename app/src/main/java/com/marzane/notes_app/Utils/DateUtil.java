@@ -2,6 +2,7 @@ package com.marzane.notes_app.Utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 public class DateUtil {
 
@@ -21,6 +22,15 @@ public class DateUtil {
 
         String dateTimeString = localDateTime.format(formatter);	//2019-03-28 14:47:33
         return dateTimeString;
+    }
+
+    public static String customDateFormatToString(LocalDateTime localDateTime, String format) {
+        String date = "";
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        date = localDateTime.format(formatter);
+
+        return date;
     }
 
 }

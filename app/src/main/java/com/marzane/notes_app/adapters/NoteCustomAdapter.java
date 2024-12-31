@@ -31,23 +31,25 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
      * (custom ViewHolder)
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvTitle;
-        private final TextView tvLastEdit;
+        private final TextView tvTitle, tvDate, tvTime;
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
-            tvTitle = (TextView) view.findViewById(R.id.rv_note_title);
-            tvLastEdit = (TextView) view.findViewById(R.id.rv_note_date);
+            // Define click listener for the ViewHolder's View
+            tvTitle = view.findViewById(R.id.rv_note_title);
+            tvDate = view.findViewById(R.id.rv_note_date);
+            tvTime = view.findViewById(R.id.rv_note_time);
         }
 
         public TextView getTvTitle() {
             return tvTitle;
         }
-
-        public TextView getTvLastEdit(){
-            return tvLastEdit;
+        public TextView getDate(){
+            return tvDate;
+        }
+        public TextView getTime(){
+            return tvTime;
         }
     }
 
@@ -77,7 +79,9 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTvTitle().setText(note.getTitle());
-        viewHolder.getTvLastEdit().setText(DateUtil.LocalDateTimeToString(note.getLastOpened()));
+        viewHolder.getDate().setText(DateUtil.customDateFormatToString(note.getLastOpened(), resources.getString(R.string.date_format)));
+        viewHolder.getTime().setText(DateUtil.customDateFormatToString(note.getLastOpened(), resources.getString(R.string.time_format)));
+
 
         // when you click an item
         viewHolder.itemView.setOnClickListener(view -> {

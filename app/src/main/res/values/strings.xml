@@ -5,6 +5,10 @@
     <!-- default new file name -->
     <string name="default_title">newFile.txt</string>
 
+    <!-- time format -->
+    <string name="date_format">yyyy/MM/dd</string>
+    <string name="time_format">HH:mm</string>
+
     <!-- action bar options -->
     <string name="menu_clear_list">clear list</string>
     <string name="menu_close_app">close app</string>
