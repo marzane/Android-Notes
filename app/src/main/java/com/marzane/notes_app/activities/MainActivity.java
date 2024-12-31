@@ -137,17 +137,26 @@ public class MainActivity extends AppCompatActivity{
         if(id == R.id.new_file){
             loadEditorView();
             return true;
+
         } else if (id == R.id.open_file) {
             FileUtil.openFileIntent(this);
             return true;
+
         } else if(id == R.id.close_app){
             this.finishAffinity(); // cierra la app por completo (todas las activities)
             return true;
+
         } else if(id == R.id.clear_list){
             cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
+
+        }else if(id == R.id.settings) {  // open settings
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+
         }else{
             return super.onOptionsItemSelected(item);
         }

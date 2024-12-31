@@ -25,6 +25,11 @@
                 android:icon="@drawable/recycle_bin"
                 app:showAsAction="always"/>
 
+            <item android:id="@+id/settings"
+                android:title="@string/menu_settings"
+                android:icon="@drawable/settings"
+                app:showAsAction="always"/>
+
             <item android:id="@+id/close_app"
                 android:title="@string/menu_close_app"
                 android:icon="@drawable/close_app"

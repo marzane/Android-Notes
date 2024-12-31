@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="default_title">nuevo.txt</string>
+    <string name="menu_clear_list">limpiar lista</string>
+    <string name="menu_close_app">salir</string>
+    <string name="menu_open_file">abrir</string>
+    <string name="menu_save_as">guardar como</string>
+    <string name="menu_new_file">nuevo</string>
+    <string name="menu_save_file">guardar</string>
+    <string name="menu_file_info">información</string>
+    <string name="menu_settings">configuración</string>
+    <string name="dialog_close_app">Los cambios sin guardar se perderán. \n¿Cerrar aplicación?</string>
+    <string name="dialog_open_file">Los cambios sin guardar se perderán. \n¿Abrir archivo?</string>
+    <string name="dialog_new_file">Los cambios sin guardar se perderán. \n¿Crear un archivo nuevo?</string>
+    <string name="dialog_clear_list">¿Eliminar el historial de notas recientes?</string>
+    <string name="dialog_close_file">Los cambios sin guardar se perderán. \n¿Cerrar archivo?</string>
+    <string name="dialog_remove_from_list">¿Está seguro de quitar este archivo de la lista? Puede reabrirlo en otro momento:</string>
+    <string name="dialog_delete_file">¿Está seguro de eliminar este archivo permanentemente? Esta acción no se puede deshacer:</string>
+    <string name="dialog_option_back">atrás</string>
+    <string name="dialog_option_edit">editar</string>
+    <string name="dialog_option_info">info</string>
+    <string name="dialog_option_remove_from_list">quitar de lista</string>
+    <string name="dialog_option_delete_file">eliminar</string>
+    <string name="deleted_file_ok">archivo eliminado</string>
+    <string name="copy_to_clipboard">copiado al portapapeles</string>
+    <string name="general_header">General</string>
+    <string name="editor_header">Editor</string>
+    <string name="language_title">Idioma</string>
+    <string name="date_format">dd/MM/yyyy</string>
+</resources>
