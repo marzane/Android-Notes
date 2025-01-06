@@ -20,7 +20,7 @@
                 <TextView
                     android:id="@+id/tv_title"
                     style="@style/dialog_message"
-                    android:text="File"/>
+                    android:text="@string/file"/>
                 <ImageButton
                     android:id="@+id/ib_copy_1"
                     android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
                 <TextView
                     android:id="@+id/tv_location"
                     style="@style/dialog_message"
-                    android:text="Location"/>
+                    android:text="@string/location"/>
                 <ImageButton
                     android:id="@+id/ib_copy_2"
                     android:layout_width="wrap_content"

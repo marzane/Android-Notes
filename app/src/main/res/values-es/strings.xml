@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Notes</string>
     <string name="default_title">nuevo.txt</string>
     <string name="menu_clear_list">limpiar lista</string>
     <string name="menu_close_app">salir</string>
@@ -22,10 +21,15 @@
     <string name="dialog_option_info">info</string>
     <string name="dialog_option_remove_from_list">quitar de lista</string>
     <string name="dialog_option_delete_file">eliminar</string>
+    <string name="file">Archivo</string>
+    <string name="location">Localización</string>
     <string name="deleted_file_ok">archivo eliminado</string>
     <string name="copy_to_clipboard">copiado al portapapeles</string>
     <string name="general_header">General</string>
     <string name="editor_header">Editor</string>
     <string name="language_title">Idioma</string>
     <string name="date_format">dd/MM/yyyy</string>
+    <string name="permission_storage_granted">Permisos de almacenamiento concedidos</string>
+    <string name="permission_storage_denied">Permisos de almacenamiento denegados: Esta aplicación necesita acceder al almacenamiento del dispositivo para leer y escribir archivos.</string>
+    <string name="fontSize_title">Tamaño de letra</string>
 </resources>

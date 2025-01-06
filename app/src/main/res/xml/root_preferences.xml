@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/general_header">
 
@@ -9,28 +10,37 @@
             app:useSimpleSummaryProvider="true" />
 -->
         <ListPreference
-            app:defaultValue="english"
+            app:key="language"
+            app:defaultValue="default"
             app:entries="@array/language_entries"
             app:entryValues="@array/language_values"
-            app:key="english"
             app:title="@string/language_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/editor_header">
+        <PreferenceCategory app:title="@string/editor_header">
 <!--
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
+            <SwitchPreferenceCompat
+                app:key="sync"
+                app:title="@string/sync_title" />
 
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+            <SwitchPreferenceCompat
+                app:dependency="sync"
+                app:key="attachment"
+                app:summaryOff="@string/attachment_summary_off"
+                app:summaryOn="@string/attachment_summary_on"
+                app:title="@string/attachment_title" />
 -->
+            <SeekBarPreference
+                app:title="@string/fontSize_title"
+                app:key="fontSize"
+                app:defaultValue="17"
+                android:max="30"
+                app:min="10"
+                />
+
     </PreferenceCategory>
+
 
 </PreferenceScreen>

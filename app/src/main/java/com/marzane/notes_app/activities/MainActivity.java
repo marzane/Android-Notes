@@ -38,6 +38,7 @@ import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.customDialogs.CustomDialogClass;
+import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.util.ArrayList;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity{
     private int screen_height;
     private Resources resources;
     private CustomDialogClass cdd;
+    private String appLang;
+    private String newLang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onStart() {
+
         // initialize recent notes list
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
             arrayRecentNotes = data;
@@ -88,6 +92,14 @@ public class MainActivity extends AppCompatActivity{
 
         super.onStart();
     }
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+    }
+
 
 
     @Override
@@ -165,7 +177,6 @@ public class MainActivity extends AppCompatActivity{
 
 
     // - STORAGE PERMISSIONS -
-    // https://medium.com/@kezzieleo/manage-external-storage-permission-android-studio-java-9c3554cf79a7
 
     // This code checks if Storage Permissions have been granted and returns a boolean:
     public boolean checkStoragePermissions(){
@@ -223,8 +234,10 @@ public class MainActivity extends AppCompatActivity{
                                 //Manage External Storage Permissions Granted
                                 Log.d(TAG, "onActivityResult: Manage External Storage Permissions Granted");
                             }else{
-                                Toast.makeText(MainActivity.this, "Storage Permissions Denied", Toast.LENGTH_SHORT).show();
-                                this.finishAffinity();
+                                //Manage External Storage Permissions denied
+                                CustomDialogInformation cdd = new CustomDialogInformation(this, resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
+                                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                cdd.show();
                             }
                         }else{
                             //Below android 11
@@ -242,10 +255,11 @@ public class MainActivity extends AppCompatActivity{
                 boolean read = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
                 if(read && write){
-                    Toast.makeText(MainActivity.this, "Storage Permissions Granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(MainActivity.this, "Storage Permissions Denied", Toast.LENGTH_SHORT).show();
-                    this.finishAffinity();
+                    CustomDialogInformation cdd = new CustomDialogInformation(this, resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
+                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    cdd.show();
                 }
             }
         }

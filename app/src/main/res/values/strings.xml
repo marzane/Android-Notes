@@ -34,6 +34,10 @@
     <string name="dialog_option_remove_from_list">remove from list</string>
     <string name="dialog_option_delete_file">delete</string>
 
+    <!-- value titles in the file description -->
+    <string name="file">File</string>
+    <string name="location">Location</string>
+
     <!-- toast messages -->
     <string name="deleted_file_ok">file deleted successfully</string>
     <string name="copy_to_clipboard">copied to clipboard</string>
@@ -50,6 +54,7 @@
     <!-- Messages Preferences -->
     <string name="signature_title" translatable="false">Your signature</string>
     <string name="language_title">Language</string>
+    <string name="fontSize_title">Font size</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title" translatable="false">Sync email periodically</string>
@@ -57,4 +62,8 @@
     <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
+
+    <!-- message when user grants or denies storage permission -->
+    <string name="permission_storage_granted">Storage Permissions Granted</string>
+    <string name="permission_storage_denied">Storage Permissions Denied: This app needs to access device storage to read and write files</string>
 </resources>

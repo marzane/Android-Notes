@@ -2,6 +2,7 @@ package com.marzane.notes_app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.Utils.MyClipboardManager;
@@ -44,6 +46,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private Intent intent;
     private String texto;  // el texto que contiene el archivo
+    private int fontSize;
     private NoteModel note;
     private Resources resources;
     private TextViewUndoRedo textViewUndoRedo;
@@ -63,6 +66,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         note = new NoteModel();
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        fontSize = sharedPreferences.getInt("fontSize", 17);
+
         // initialize toolbar
         Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
         setSupportActionBar(toolbarTop);
@@ -74,6 +80,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         handlePathOz = new HandlePathOz(this, this);
 
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
+        etEditor.setTextSize(fontSize);
         etEditor.addTextChangedListener(textWatcher);
         etEditor.requestFocus();
         textViewUndoRedo = new TextViewUndoRedo(etEditor);
@@ -102,10 +109,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 texto = FileUtil.readFile(uriFile, this);
 
                 if(texto == null){
-                    taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
-                        //Toast.makeText(this, dataResult + "", Toast.LENGTH_LONG).show();
-                    });
-                    //finish();     // close this activity
+                    taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {});
                 } else {
                     etEditor.setText(texto);
                     handlePathOz.getRealPath(uriFile);
