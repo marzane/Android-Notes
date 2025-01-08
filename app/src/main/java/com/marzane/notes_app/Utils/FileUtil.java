@@ -6,15 +6,20 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.marzane.notes_app.ActionValues;
+import com.marzane.notes_app.R;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
+import com.marzane.notes_app.models.NoteModel;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,8 +51,7 @@ public class FileUtil {
         }
         catch (Exception ex)
         {
-            //Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_LONG).show();
-            cdd = new CustomDialogInformation(activity, ex.getMessage(), ActionValues.CLOSE_ACTIVITY.getID());
+            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.CLOSE_ACTIVITY.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return null;
@@ -66,12 +70,12 @@ public class FileUtil {
             bw.flush();
             bw.close();
 
-            Toast.makeText(activity, "file saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getResources().getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
             return true;
 
         } catch (IOException ex) {
             //Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_LONG).show();
-            cdd = new CustomDialogInformation(activity, ex.getMessage(), ActionValues.NOACTION.getID());
+            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return false;
@@ -88,12 +92,11 @@ public class FileUtil {
             bw.flush();
             bw.close();
 
-            Toast.makeText(activity, "file saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getResources().getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
             return true;
 
         } catch (IOException ex) {
-            //Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_LONG).show();
-            cdd = new CustomDialogInformation(activity, ex.getMessage(), ActionValues.NOACTION.getID());
+            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return false;
@@ -102,11 +105,32 @@ public class FileUtil {
     }
 
 
+    private boolean renameFile(String path, String newName) {
+        Boolean result = false;
+        String currentFileName = path.substring(path.lastIndexOf("/") + 1); // original file name
+        //currentFileName = currentFileName.substring(1);
+        //Log.i("Current file name", currentFileName);
+
+        File directory = new File(path.substring(0, path.lastIndexOf("/")));   // directory
+
+        if(directory.exists()){
+            File from      = new File(path);                // original file
+            File to        = new File(directory, newName);  // future renamed file
+            if (from.exists()) {
+                result = from.renameTo(to);
+            }
+
+        }
+        return result;
+    }
+
+
     // open file button listener
     public static void openFileIntent(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // cargar el selector de archivos
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
+        intent.setType(activity.getResources().getString(R.string.mime_type));
+        //intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 

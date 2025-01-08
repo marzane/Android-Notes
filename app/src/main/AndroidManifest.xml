@@ -31,14 +31,25 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".activities.EditorActivity"
-            android:exported="false"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="@string/mime_type" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

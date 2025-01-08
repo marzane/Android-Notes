@@ -132,6 +132,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT); // cargar el selector de archivos
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/plain");
+
         intent.putExtra(Intent.EXTRA_TITLE, note.getTitle());
 
         // opcional, especifica la ubicacion que deberia abrirse al crear el archivo
@@ -158,7 +159,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                        if(note.getRealPath() != null){
+                        if(note.getRealPath() == null){
                             FileUtil.writeFile(note.getPath(), texto, this);
                         } else {
                             FileUtil.overwriteFile(note.getRealPath(), texto, this);
@@ -205,7 +206,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         note.setRealPath(pathOz.getPath());
 
         if(!rutaRealArchivo.isEmpty()) {
-            Toast.makeText(this, "opening file " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, resources.getString(R.string.opening_file) + " " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
             note.setlastOpened(LocalDateTime.now());
             taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {});
         }

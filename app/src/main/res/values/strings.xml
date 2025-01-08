@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Notes</string>
     <string name="extra_intent_uri_file" translatable="false">uriFile</string>
+    <string name="mime_type" translatable="false">text/*</string>
 
     <!-- default new file name -->
     <string name="default_title">newFile.txt</string>
@@ -42,6 +43,8 @@
     <string name="deleted_file_ok">file deleted successfully</string>
     <string name="copy_to_clipboard">copied to clipboard</string>
     <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+    <string name="file_saved">file saved</string>
+    <string name="opening_file">opening file</string>
 
 
     <!-- ******** -->
@@ -52,16 +55,8 @@
     <string name="editor_header">Editor</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title" translatable="false">Your signature</string>
     <string name="language_title">Language</string>
     <string name="fontSize_title">Font size</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title" translatable="false">Sync email periodically</string>
-    <string name="attachment_title" translatable="false">Download incoming attachments</string>
-    <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
 
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>
