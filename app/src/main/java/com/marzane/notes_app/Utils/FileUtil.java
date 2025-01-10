@@ -30,6 +30,12 @@ public class FileUtil {
 
     private FileUtil(){}
 
+    /**
+     *
+     * @param uri
+     * @param activity
+     * @return String
+     */
     public static String readFile(Uri uri, Activity activity){
         String textoLeer = "";
 
@@ -59,6 +65,13 @@ public class FileUtil {
     }
 
 
+    /**
+     *
+     * @param uri
+     * @param text
+     * @param activity
+     * @return boolean
+     */
     public static boolean writeFile(@NonNull Uri uri, @NonNull String text, Activity activity) {
 
         try {
@@ -82,6 +95,13 @@ public class FileUtil {
     }
 
 
+    /**
+     *
+     * @param realUri
+     * @param text
+     * @param activity
+     * @return boolean
+     */
     public static boolean overwriteFile(@NonNull String realUri, @NonNull String text, Activity activity) {
 
         try {
@@ -102,8 +122,14 @@ public class FileUtil {
 
     }
 
-    // path = "dir1/dir2/file.txt"
-    // newName = "newName.txt"
+
+    /**
+     *
+     * @param activity
+     * @param path "dir1/dir2/file.txt"
+     * @param newName "newName.txt"
+     * @return boolean
+     */
     public static boolean renameFile(Activity activity, String path, String newName) {
         Boolean result = false;
 
@@ -130,13 +156,13 @@ public class FileUtil {
         return result;
     }
 
-
-    // open file button listener
+    /**
+     * @param activity
+     */
     public static void openFileIntent(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // cargar el selector de archivos
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(activity.getResources().getString(R.string.mime_type));
-        //intent.setType("text/plain");
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 

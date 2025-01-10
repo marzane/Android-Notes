@@ -14,9 +14,14 @@ import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.DeleteAllNotesTask;
 import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.activities.EditorActivity;
 
-public class CustomDialogClass extends Dialog implements android.view.View.OnClickListener {
+/**
+ * This dialog constains a simple text with
+ * accept and cancel buttons (yes / no)
+ */
+public class CustomDialogYesNo extends Dialog implements android.view.View.OnClickListener {
 
     private TaskRunner taskRunner;
 
@@ -26,7 +31,7 @@ public class CustomDialogClass extends Dialog implements android.view.View.OnCli
     public String message;
     public int action;
 
-    public CustomDialogClass(Activity a, String message, int action ) {
+    public CustomDialogYesNo(Activity a, String message, int action ) {
         super(a);
         this.activity = a;
         this.message = message;
@@ -55,20 +60,25 @@ public class CustomDialogClass extends Dialog implements android.view.View.OnCli
         int id = v.getId();
 
         if(id == R.id.button_accept){
-            // do an action
+
             if(action == ActionValues.CLOSE_APP.getID()){
                 activity.finishAffinity();
+
             } else if(action == ActionValues.OPEN_FILE_PROVIDER.getID()){
                 FileUtil.openFileIntent(activity);
+
             } else if(action == ActionValues.NEW_FILE.getID()){
                 Intent intentNew = new Intent(activity, EditorActivity.class);
                 activity.startActivity(intentNew);
                 activity.finish();
+
             } else if(action == ActionValues.CLEAR_LIST.getID()){
                 taskRunner.executeAsync(new DeleteAllNotesTask(activity), (data) -> {
-                    activity.recreate();
+                    if(data > 0) RecyclerViewNotesManager.deleteAllItems();
+
                 });
-            } else if(action == ActionValues.CLOSE_FILE.getID()){
+
+            } else if(action == ActionValues.CLOSE_EDITOR.getID()){
                 activity.finish();
             }
 

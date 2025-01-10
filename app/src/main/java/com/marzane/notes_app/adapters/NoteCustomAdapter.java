@@ -33,7 +33,14 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         this.resources = activity.getResources();
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager)
+     * @param viewGroup The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return ViewHolder
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
@@ -43,7 +50,12 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         return new ViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Replace the contents of a view (invoked by the layout manager)
+     * @param viewHolder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
@@ -72,16 +84,13 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         });
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Return the size of your dataset (invoked by the layout manager)
+     * @return int
+     */
     @Override
     public int getItemCount() {
         return noteList.size();
-    }
-
-    public void removeAt(int position) {
-        noteList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, noteList.size());
     }
 
 

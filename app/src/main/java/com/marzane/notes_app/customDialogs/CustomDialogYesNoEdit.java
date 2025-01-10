@@ -27,6 +27,12 @@ import com.marzane.notes_app.models.NoteModel;
 import java.io.File;
 import java.util.ArrayList;
 
+/**
+ * This dialog constains:
+ * 1) a simple text,
+ * 2) an EditText,
+ * 3) accept and cancel buttons (yes / no)
+ */
 public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListener {
 
     private TaskRunner taskRunner;

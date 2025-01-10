@@ -28,7 +28,7 @@ import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.Utils.TextViewUndoRedo;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
-import com.marzane.notes_app.customDialogs.CustomDialogClass;
+import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
@@ -86,11 +86,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         etEditor.requestFocus();
         textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
-        // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nueva_nota.txt"
+        // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
         if(note.getTitle() == null) {
             note.setTitle(resources.getString(R.string.default_title));
 
-            // se muestra el nombre del archivo en la pantalla (textView)
+            // se muestra el nombre del archivo en la barra superior (action bar)
             getSupportActionBar().setTitle(note.getTitle());
         }
 
@@ -106,13 +106,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
                 getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
                 note.setPath(uriFile);
                 texto = FileUtil.readFile(uriFile, this);
 
-                if(texto == null){
+                if(texto == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
+
                     taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
                         RecyclerViewNotesManager.deleteItemAndData(note);
                     });
+
                 } else {
                     etEditor.setText(texto);
                     handlePathOz.getRealPath(uriFile);
@@ -272,19 +275,19 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if (id == R.id.close_app){  // close app
 
-            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
+            CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
 
         } else if(id == R.id.open_file) {  // open file
-            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
+            CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
 
         } else if(id == R.id.new_file_editor) {  // new file
-            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
+            CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
@@ -296,7 +299,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if(id == android.R.id.home){
-            CustomDialogClass cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_FILE.getID());
+            CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;

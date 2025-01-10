@@ -1,6 +1,5 @@
 package com.marzane.notes_app.customDialogs;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -14,6 +13,11 @@ import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.models.NoteModel;
 
+/**
+ * This dialog is used to show file details such
+ * as file name and where is located when user press
+ * the button "info file"
+ */
 public class CustomDialogFileInfo extends Dialog implements View.OnClickListener {
 
     public Activity activity;
@@ -29,7 +33,6 @@ public class CustomDialogFileInfo extends Dialog implements View.OnClickListener
         this.note = note;
     }
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,7 +9,7 @@ public enum ActionValues {
     CLOSE_APP(4),
     CLOSE_ACTIVITY(5),
     CLEAR_LIST(6),
-    CLOSE_FILE(7),
+    CLOSE_EDITOR(7),
     REMOVE_FROM_LIST(8),
     DELETE_FILE(9),
     RENAME_FILE(10);

@@ -24,6 +24,13 @@ public class RecyclerViewNotesManager {
     }
 
 
+    public static void deleteAllItems(){
+        int size = arrayRecentNotes.size();
+        arrayRecentNotes.clear();
+        rvNoteList.getAdapter().notifyItemRangeRemoved(0, size);
+    }
+
+
     public static void insertOrUpdateItem(NoteModel noteModel){
         int position = arrayRecentNotes.indexOf(noteModel);
         if (position > -1){ // update

@@ -11,6 +11,10 @@ import android.widget.TextView;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 
+/**
+ * Simple dialog only to show a message with
+ * a button to close it
+ */
 public class CustomDialogInformation extends Dialog implements View.OnClickListener {
 
     public Activity c;

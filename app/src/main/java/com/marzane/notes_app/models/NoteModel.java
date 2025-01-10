@@ -74,6 +74,7 @@ public class NoteModel implements Serializable {
     }
 
 
+    // compare by uri path
     @Override
     public boolean equals(Object object) {
         return (object instanceof NoteModel) && (path != null)

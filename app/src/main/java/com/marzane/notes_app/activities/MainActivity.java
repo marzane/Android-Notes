@@ -38,7 +38,7 @@ import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
-import com.marzane.notes_app.customDialogs.CustomDialogClass;
+import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity{
     private int screen_width;
     private int screen_height;
     private Resources resources;
-    private CustomDialogClass cdd;
+    private CustomDialogYesNo cdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity{
 
         int id = item.getItemId();
 
-        if(id == R.id.new_file){
+        if(id == R.id.new_file){    // open EditorActivity without extras
             loadEditorView();
             return true;
 
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity{
             return true;
 
         } else if(id == R.id.clear_list){
-            cdd = new CustomDialogClass(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
+            cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;

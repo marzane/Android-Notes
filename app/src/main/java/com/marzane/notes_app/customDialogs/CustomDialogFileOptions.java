@@ -16,9 +16,13 @@ import android.widget.Toast;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.activities.EditorActivity;
-import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.models.NoteModel;
 
+/**
+ * This dialog is used when user do a long
+ * press on a note in the recent notes list
+ * (recyclerView in MainActivity)
+ */
 public class CustomDialogFileOptions extends Dialog implements View.OnClickListener {
 
     private Activity activity;
@@ -26,13 +30,11 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
     private TextView tvMessage;
     private NoteModel note;
     private Resources resources;
-    //private NoteCustomAdapter.ViewHolder viewHolder;
 
     public CustomDialogFileOptions(Activity a, NoteModel note) {
         super(a);
         this.activity = a;
         this.note = note;
-        //this.viewHolder = viewHolder;
         resources = activity.getResources();
     }
 
@@ -88,6 +90,9 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
             cdd.show();
 
         } else if (id == R.id.button_rename){
+
+            // TODO: rename
+
             Toast.makeText(activity, "rename", Toast.LENGTH_SHORT).show();
             String message = resources.getString(R.string.dialog_rename_file);
             CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.RENAME_FILE.getID(), note);
