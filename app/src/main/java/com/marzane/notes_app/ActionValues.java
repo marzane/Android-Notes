@@ -11,7 +11,8 @@ public enum ActionValues {
     CLEAR_LIST(6),
     CLOSE_FILE(7),
     REMOVE_FROM_LIST(8),
-    DELETE_FILE(9);
+    DELETE_FILE(9),
+    RENAME_FILE(10);
 
     private int id;
 

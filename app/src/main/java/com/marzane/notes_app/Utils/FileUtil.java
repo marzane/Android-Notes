@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
-import com.marzane.notes_app.models.NoteModel;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,12 +28,13 @@ public class FileUtil {
     private static Resources resources;
     private static CustomDialogInformation cdd;
 
+    private FileUtil(){}
+
     public static String readFile(Uri uri, Activity activity){
         String textoLeer = "";
 
         try
         {
-            // abro y leo el contenido del archivo, luego lo pego en el editText del editor
             BufferedReader br = new BufferedReader(new InputStreamReader(activity.getContentResolver().openInputStream(uri)));
             String linea;
 
@@ -61,12 +59,12 @@ public class FileUtil {
     }
 
 
-    public static boolean writeFile(@NonNull Uri uri, @NonNull String texto, Activity activity) {
+    public static boolean writeFile(@NonNull Uri uri, @NonNull String text, Activity activity) {
 
         try {
             OutputStream outputStream = activity.getContentResolver().openOutputStream(uri);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
-            bw.write(texto);
+            bw.write(text);
             bw.flush();
             bw.close();
 
@@ -84,11 +82,11 @@ public class FileUtil {
     }
 
 
-    public static boolean overwriteFile(@NonNull String realUri, @NonNull String texto, Activity activity) {
+    public static boolean overwriteFile(@NonNull String realUri, @NonNull String text, Activity activity) {
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(realUri));
-            bw.write(texto);
+            bw.write(text);
             bw.flush();
             bw.close();
 
@@ -104,23 +102,31 @@ public class FileUtil {
 
     }
 
-
-    private boolean renameFile(String path, String newName) {
+    // path = "dir1/dir2/file.txt"
+    // newName = "newName.txt"
+    public static boolean renameFile(Activity activity, String path, String newName) {
         Boolean result = false;
-        String currentFileName = path.substring(path.lastIndexOf("/") + 1); // original file name
-        //currentFileName = currentFileName.substring(1);
-        //Log.i("Current file name", currentFileName);
 
-        File directory = new File(path.substring(0, path.lastIndexOf("/")));   // directory
+        try{
+            String currentFileName = path.substring(path.lastIndexOf("/") + 1); // original file name
+            //currentFileName = currentFileName.substring(1);
+            //Log.i("Current file name", currentFileName);
 
-        if(directory.exists()){
+            File directory = new File(path.substring(0, path.lastIndexOf("/")));   // directory
+
+            // if directory exists
             File from      = new File(path);                // original file
             File to        = new File(directory, newName);  // future renamed file
-            if (from.exists()) {
-                result = from.renameTo(to);
-            }
 
+            // if File from exists
+            result = from.renameTo(to);
+
+        } catch (Exception ex){
+            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
         }
+
         return result;
     }
 

@@ -72,4 +72,12 @@ public class NoteModel implements Serializable {
     public void setRealPath(String realPath) {
         this.realPath = realPath;
     }
+
+
+    @Override
+    public boolean equals(Object object) {
+        return (object instanceof NoteModel) && (path != null)
+                ? path.equals(((NoteModel) object).path) //change ".equals" to "=" if you use int instead of Integer
+                : (object == this);
+    }
 }

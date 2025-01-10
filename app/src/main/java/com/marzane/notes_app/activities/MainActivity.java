@@ -37,24 +37,19 @@ import com.marzane.notes_app.Threads.task.ListAllNotesTask;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.customDialogs.CustomDialogClass;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
-import com.marzane.notes_app.models.NoteModel;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity{
 
     private TaskRunner taskRunner = new TaskRunner();
     private RecyclerView rvNoteList;
-    private ArrayList<NoteModel> arrayRecentNotes = new ArrayList<>();
     private int screen_width;
     private int screen_height;
     private Resources resources;
     private CustomDialogClass cdd;
-    private String appLang;
-    private String newLang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,22 +70,18 @@ public class MainActivity extends AppCompatActivity{
         screen_height = displayMetrics.heightPixels;
         screen_width = displayMetrics.widthPixels;
 
-    }
-
-
-    @Override
-    protected void onStart() {
 
         // initialize recent notes list
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
-            arrayRecentNotes = data;
-            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(arrayRecentNotes, MainActivity.this, resources);
+
+            NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(data,MainActivity.this);
             rvNoteList.setLayoutManager(new GridLayoutManager(this, screen_width/350));
             rvNoteList.setAdapter(noteCustomAdapter);
 
+            RecyclerViewNotesManager.setDataList(data);
+            RecyclerViewNotesManager.setRecyclerView(rvNoteList);
         });
 
-        super.onStart();
     }
 
 

@@ -11,29 +11,29 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
-import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.activities.EditorActivity;
+import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.models.NoteModel;
 
 public class CustomDialogFileOptions extends Dialog implements View.OnClickListener {
 
-    private TaskRunner taskRunner;
+    private Activity activity;
+    private LinearLayout back, edit, info, removeList, delete;
+    private TextView tvMessage;
+    private NoteModel note;
+    private Resources resources;
+    //private NoteCustomAdapter.ViewHolder viewHolder;
 
-    public Activity activity;
-    public LinearLayout back, edit, info, removeList, delete;
-    public TextView tvMessage;
-    public NoteModel note;
-    public  Resources resources;
-
-    public CustomDialogFileOptions(Activity a, NoteModel note, Resources resources) {
+    public CustomDialogFileOptions(Activity a, NoteModel note) {
         super(a);
         this.activity = a;
         this.note = note;
-        this.resources = resources;
-        //taskRunner = new TaskRunner();
+        //this.viewHolder = viewHolder;
+        resources = activity.getResources();
     }
 
     @Override
@@ -77,13 +77,20 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
 
         } else if(id == R.id.button_delete_from_list){
             String message = resources.getString(R.string.dialog_remove_from_list);
-            CustomDialogYesNoFileInfo cdd = new CustomDialogYesNoFileInfo(activity, message, ActionValues.REMOVE_FROM_LIST.getID(), note);
+            CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.REMOVE_FROM_LIST.getID(), note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
 
         } else if (id == R.id.button_delete_file) {
             String message = resources.getString(R.string.dialog_delete_file);
-            CustomDialogYesNoFileInfo cdd = new CustomDialogYesNoFileInfo(activity, message, ActionValues.DELETE_FILE.getID(), note);
+            CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.DELETE_FILE.getID(), note);
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+
+        } else if (id == R.id.button_rename){
+            Toast.makeText(activity, "rename", Toast.LENGTH_SHORT).show();
+            String message = resources.getString(R.string.dialog_rename_file);
+            CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.RENAME_FILE.getID(), note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
         }

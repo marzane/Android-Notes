@@ -34,4 +34,6 @@
     <string name="permission_storage_denied">Permisos de almacenamiento denegados: Esta aplicación necesita acceder al almacenamiento del dispositivo para leer y escribir archivos.</string>
     <string name="fontSize_title">Tamaño de letra</string>
     <string name="opening_file">abriendo archivo</string>
+    <string name="dialog_option_rename">cambiar nombre</string>
+    <string name="dialog_rename_file">Cambiar nombre: Esta acción no se puede deshacer:</string>
 </resources>

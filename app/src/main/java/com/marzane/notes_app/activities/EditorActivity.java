@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.Utils.TextViewUndoRedo;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.customDialogs.CustomDialogClass;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
@@ -109,7 +110,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 texto = FileUtil.readFile(uriFile, this);
 
                 if(texto == null){
-                    taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {});
+                    taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
+                        RecyclerViewNotesManager.deleteItemAndData(note);
+                    });
                 } else {
                     etEditor.setText(texto);
                     handlePathOz.getRealPath(uriFile);
@@ -208,7 +211,14 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         if(!rutaRealArchivo.isEmpty()) {
             Toast.makeText(this, resources.getString(R.string.opening_file) + " " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
             note.setlastOpened(LocalDateTime.now());
-            taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {});
+            taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {
+                if(dataResult > 0){
+                    RecyclerViewNotesManager.insertOrUpdateItem(note);
+
+                    // update note position to first in mainActivity list
+                    RecyclerViewNotesManager.moveItem(0, note);
+                }
+            });
         }
 
         //Handle Exception (Optional)

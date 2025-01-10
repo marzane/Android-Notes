@@ -26,38 +26,11 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
     private Activity activity;
     private Resources resources;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder)
-     */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvTitle, tvDate, tvTime;
 
-        public ViewHolder(View view) {
-            super(view);
-
-            // Define click listener for the ViewHolder's View
-            tvTitle = view.findViewById(R.id.rv_note_title);
-            tvDate = view.findViewById(R.id.rv_note_date);
-            tvTime = view.findViewById(R.id.rv_note_time);
-        }
-
-        public TextView getTvTitle() {
-            return tvTitle;
-        }
-        public TextView getDate(){
-            return tvDate;
-        }
-        public TextView getTime(){
-            return tvTime;
-        }
-    }
-
-
-    public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity, Resources resources) {
+    public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity) {
         this.noteList = noteList;
         this.activity = activity;
-        this.resources = resources;
+        this.resources = activity.getResources();
     }
 
     // Create new views (invoked by the layout manager)
@@ -92,7 +65,7 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         });
 
         viewHolder.itemView.setOnLongClickListener(view -> {
-            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note, resources);
+            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
             return true;
@@ -103,6 +76,40 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
     @Override
     public int getItemCount() {
         return noteList.size();
+    }
+
+    public void removeAt(int position) {
+        noteList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, noteList.size());
+    }
+
+
+    /**
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder)
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvTitle, tvDate, tvTime;
+
+        public ViewHolder(View view) {
+            super(view);
+
+            // Define click listener for the ViewHolder's View
+            tvTitle = view.findViewById(R.id.rv_note_title);
+            tvDate = view.findViewById(R.id.rv_note_date);
+            tvTime = view.findViewById(R.id.rv_note_time);
+        }
+
+        public TextView getTvTitle() {
+            return tvTitle;
+        }
+        public TextView getDate(){
+            return tvDate;
+        }
+        public TextView getTime(){
+            return tvTime;
+        }
     }
 
 }

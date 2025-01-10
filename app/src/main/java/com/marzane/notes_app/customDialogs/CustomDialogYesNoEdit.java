@@ -1,11 +1,11 @@
 package com.marzane.notes_app.customDialogs;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -13,41 +13,50 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
+import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
+import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.io.File;
+import java.util.ArrayList;
 
-public class CustomDialogYesNoFileInfo extends Dialog implements View.OnClickListener {
+public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListener {
 
     private TaskRunner taskRunner;
 
-    public Activity activity;
-    public ImageButton yes, no;
-    public TextView tvMessage;
-    public EditText etPath;
-    public String message;
-    public int action;
-    public NoteModel note;
+    private Activity activity;
+    private ImageButton yes, no;
+    private TextView tvMessage;
+    private EditText etPath;
+    private String message;
+    private int action;
+    private NoteModel note;
+    private ArrayList<NoteModel> arrayListNotes;
+    private RecyclerView rvNotesMain;
 
-    public CustomDialogYesNoFileInfo(Activity a, String message, int action, NoteModel note) {
+    public CustomDialogYesNoEdit(Activity a, String message, int action, NoteModel note ) {
         super(a);
         this.activity = a;
         this.message = message;
         this.action = action;
         this.note = note;
+        arrayListNotes = RecyclerViewNotesManager.getDataList();
+        rvNotesMain = RecyclerViewNotesManager.getRecyclerView();
         taskRunner = new TaskRunner();
     }
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.custom_dialog_yes_no_file_info);
+        setContentView(R.layout.custom_dialog_yes_no_edit);
 
         yes = findViewById(R.id.button_accept);
         no = findViewById(R.id.button_cancel);
@@ -58,8 +67,13 @@ public class CustomDialogYesNoFileInfo extends Dialog implements View.OnClickLis
         no.setOnClickListener(this);
         tvMessage.setText(message);
 
+
         if(action == ActionValues.REMOVE_FROM_LIST.getID()){
             etPath.setText(note.getTitle());
+            if(action == ActionValues.RENAME_FILE.getID()){
+                etPath.setFocusable(true);
+                etPath.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            }
         } else if (action == ActionValues.DELETE_FILE.getID()){
             etPath.setText(note.getRealPath());
         }
@@ -75,7 +89,12 @@ public class CustomDialogYesNoFileInfo extends Dialog implements View.OnClickLis
             // do an action
             if(action == ActionValues.REMOVE_FROM_LIST.getID() || action == ActionValues.DELETE_FILE.getID()){
                 taskRunner.executeAsync(new deleteByPathTask(activity, note.getPath().toString()), countResult -> {
-                    activity.recreate();
+                    // update data
+                    RecyclerViewNotesManager.deleteItemAndData(note);
+
+                    // save edited recyclerView and dataset
+                    RecyclerViewNotesManager.setDataList(arrayListNotes);
+                    RecyclerViewNotesManager.setRecyclerView(rvNotesMain);
                 });
             }
 
@@ -94,6 +113,21 @@ public class CustomDialogYesNoFileInfo extends Dialog implements View.OnClickLis
                 }
 
             }
+
+
+            if(action == ActionValues.RENAME_FILE.getID()){
+                String newName = etPath.getText().toString();
+                if(!newName.isEmpty() || !newName.equals(note.getTitle())){
+                    if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
+                        taskRunner.executeAsync(new InsertOrUpdateFile(activity, note), result -> {
+                            Toast.makeText(activity, "File renamed", Toast.LENGTH_SHORT).show();
+                            activity.recreate();
+                        });
+                    }
+
+                }
+            }
+
 
         } else if(id == R.id.button_cancel){
             dismiss();

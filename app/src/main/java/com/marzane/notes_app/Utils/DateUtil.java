@@ -12,6 +12,8 @@ public class DateUtil {
     // formato de fecha "2024-11-29 13:31:28"
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    private DateUtil(){}
+
     // recibe "2024-11-29 13:31:28"
     public static LocalDateTime StringToLocalDateTime(String dateString){
         LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
