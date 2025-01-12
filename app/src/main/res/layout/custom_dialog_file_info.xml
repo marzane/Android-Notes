@@ -32,7 +32,7 @@
 
             <EditText
                 android:id="@+id/et_title"
-                style="@style/dialog_edit_none"
+                style="@style/dialog_edittext"
                 android:inputType="none"
                 android:focusable="false"
                 android:text="newFile.txt"/>
@@ -58,7 +58,7 @@
 
             <EditText
                 android:id="@+id/et_location"
-                style="@style/dialog_edit_none"
+                style="@style/dialog_edittext"
                 android:inputType="none"
                 android:focusable="false"
                 android:text="storage/directory1/subdirectory/newFile.txt"/>

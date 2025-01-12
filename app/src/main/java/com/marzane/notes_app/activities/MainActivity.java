@@ -46,10 +46,9 @@ public class MainActivity extends AppCompatActivity{
 
     private TaskRunner taskRunner = new TaskRunner();
     private RecyclerView rvNoteList;
-    private int screen_width;
-    private int screen_height;
+    private int screen_width, screen_height;
     private Resources resources;
-    private CustomDialogYesNo cdd;
+    private CustomDialogYesNo cd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +57,10 @@ public class MainActivity extends AppCompatActivity{
 
         if(!checkStoragePermissions()) requestForStoragePermissions();
 
+        resources = getResources();
+
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-
-        resources = getResources();
 
         rvNoteList = findViewById(R.id.rv_recent_notes);
 
@@ -142,9 +141,9 @@ public class MainActivity extends AppCompatActivity{
             return true;
 
         } else if(id == R.id.clear_list){
-            cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            cd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
+            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cd.show();
             return true;
 
         }else if(id == R.id.settings) {  // open settings

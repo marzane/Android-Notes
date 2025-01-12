@@ -9,9 +9,7 @@
 
     <EditText
         android:id="@+id/et_filePath"
-        style="@style/dialog_edit_none"
-        android:inputType="none"
-        android:focusable="false"
+        style="@style/dialog_edittext"
         android:text="daddsdsd/eete/rry/tete.txt"/>
 
     <LinearLayout

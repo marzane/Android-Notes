@@ -2,7 +2,6 @@ package com.marzane.notes_app.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import java.util.Locale;
 import android.content.res.Configuration;
@@ -43,7 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-            ListPreference languagePref = findPreference("language");
+            ListPreference languagePref = findPreference(getResources().getString(R.string.language_setting));
 
             if (languagePref != null) {
                 languagePref.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -64,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
 
-            SeekBarPreference fontSizeBar = findPreference("fontSize");
+            SeekBarPreference fontSizeBar = findPreference(getResources().getString(R.string.font_size_setting));
             if(fontSizeBar != null){
                 fontSizeBar.setOnPreferenceChangeListener((preference, newValue) -> {
                     Toast.makeText(getContext(), newValue.toString(), Toast.LENGTH_SHORT).show();

@@ -10,7 +10,7 @@
             app:useSimpleSummaryProvider="true" />
 -->
         <ListPreference
-            app:key="language"
+            app:key="@string/language_setting"
             app:defaultValue="default"
             app:entries="@array/language_entries"
             app:entryValues="@array/language_values"
@@ -34,9 +34,9 @@
 -->
             <SeekBarPreference
                 app:title="@string/fontSize_title"
-                app:key="fontSize"
+                app:key="@string/font_size_setting"
                 app:defaultValue="17"
-                android:max="30"
+                android:max="40"
                 app:min="10"
                 />
 

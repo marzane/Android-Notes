@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -74,12 +73,9 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
         tvMessage.setText(message);
 
 
-        if(action == ActionValues.REMOVE_FROM_LIST.getID()){
+        if(action == ActionValues.REMOVE_FROM_LIST.getID() || action == ActionValues.RENAME_FILE.getID()){
             etPath.setText(note.getTitle());
-            if(action == ActionValues.RENAME_FILE.getID()){
-                etPath.setFocusable(true);
-                etPath.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-            }
+
         } else if (action == ActionValues.DELETE_FILE.getID()){
             etPath.setText(note.getRealPath());
         }
@@ -96,7 +92,7 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
             if(action == ActionValues.REMOVE_FROM_LIST.getID() || action == ActionValues.DELETE_FILE.getID()){
                 taskRunner.executeAsync(new deleteByPathTask(activity, note.getPath().toString()), countResult -> {
                     // update data
-                    RecyclerViewNotesManager.deleteItemAndData(note);
+                    RecyclerViewNotesManager.deleteItem(note);
 
                     // save edited recyclerView and dataset
                     RecyclerViewNotesManager.setDataList(arrayListNotes);
@@ -123,12 +119,28 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
 
             if(action == ActionValues.RENAME_FILE.getID()){
                 String newName = etPath.getText().toString();
+
                 if(!newName.isEmpty() || !newName.equals(note.getTitle())){
-                    if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
-                        taskRunner.executeAsync(new InsertOrUpdateFile(activity, note), result -> {
-                            Toast.makeText(activity, "File renamed", Toast.LENGTH_SHORT).show();
-                            activity.recreate();
-                        });
+
+                    NoteModel editedNote = note;
+                    editedNote.updateTitle(newName);
+
+                    File editedFile = new File(editedNote.getRealPath());
+
+                    if(!editedFile.exists()){
+                        // no existe; se puede usar el nombre nuevo
+                        // TODO: renombrar
+
+                        if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
+
+                            taskRunner.executeAsync(new InsertOrUpdateFile(activity, editedNote), result -> {
+
+                                Toast.makeText(activity, activity.getResources().getString(R.string.file_renamed), Toast.LENGTH_SHORT).show();
+
+                            });
+                        }
+                    } else {
+                        // existe; se cancela renombrar
                     }
 
                 }

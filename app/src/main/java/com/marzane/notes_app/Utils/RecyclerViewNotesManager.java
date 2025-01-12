@@ -15,7 +15,7 @@ public class RecyclerViewNotesManager {
     private RecyclerViewNotesManager(){}
 
 
-    public static void deleteItemAndData(NoteModel noteModel){
+    public static void deleteItem(NoteModel noteModel){
         int position = arrayRecentNotes.indexOf(noteModel);
         if (position > -1){
             arrayRecentNotes.remove(position);
@@ -53,6 +53,15 @@ public class RecyclerViewNotesManager {
 
             rvNoteList.getAdapter().notifyItemMoved(from, to);
         }
+    }
+
+
+    public static int searchItem(){
+        int count = 0;
+        ArrayList<NoteModel> resultItems = (ArrayList<NoteModel>) arrayRecentNotes.clone();
+
+
+        return count;
     }
 
 

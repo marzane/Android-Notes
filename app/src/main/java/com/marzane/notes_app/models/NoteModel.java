@@ -81,4 +81,20 @@ public class NoteModel implements Serializable {
                 ? path.equals(((NoteModel) object).path) //change ".equals" to "=" if you use int instead of Integer
                 : (object == this);
     }
+
+
+    public void updateTitle(String newTitle){
+        String oldTitle = getTitle();
+        setTitle(newTitle);
+
+        // update path
+        String path = getPath().toString();
+        String newPath = path.replace(oldTitle, newTitle);
+        setPath(Uri.parse(newPath));
+
+        // update realPath
+        String realPath = getRealPath();
+        String newRealPath = realPath.replace(oldTitle, newTitle);
+        setRealPath(newRealPath);
+    }
 }

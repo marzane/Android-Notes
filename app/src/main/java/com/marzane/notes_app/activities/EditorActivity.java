@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -46,7 +47,7 @@ import br.com.onimur.handlepathoz.model.PathOz;
 public class EditorActivity extends AppCompatActivity implements HandlePathOzListener.SingleUri{
 
     private Intent intent;
-    private String texto;  // el texto que contiene el archivo
+    private String text;  // el texto que contiene el archivo
     private int fontSize;
     private NoteModel note;
     private Resources resources;
@@ -66,9 +67,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         setContentView(R.layout.activity_editor);
 
         note = new NoteModel();
+        resources = getResources();
+        handlePathOz = new HandlePathOz(this, this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        fontSize = sharedPreferences.getInt("fontSize", 17);
+        fontSize = sharedPreferences.getInt(resources.getString(R.string.font_size_setting), 17);
 
         // initialize toolbar
         Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
@@ -76,15 +79,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
-        resources = getResources();
-
-        handlePathOz = new HandlePathOz(this, this);
 
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
         etEditor.setTextSize(fontSize);
         etEditor.addTextChangedListener(textWatcher);
         etEditor.requestFocus();
-        textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
         if(note.getTitle() == null) {
@@ -108,16 +107,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                 note.setPath(uriFile);
-                texto = FileUtil.readFile(uriFile, this);
+                text = FileUtil.readFile(uriFile, this);
 
-                if(texto == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
+                if(text == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
 
                     taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
-                        RecyclerViewNotesManager.deleteItemAndData(note);
+                        RecyclerViewNotesManager.deleteItem(note);
                     });
 
                 } else {
-                    etEditor.setText(texto);
+                    etEditor.setText(text);
                     handlePathOz.getRealPath(uriFile);
 
                     //show keyboard
@@ -155,7 +154,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == ActionValues.SAVE_FILE_AS.getID()) {  // si lo que se ha hecho es crear un archivo
-            texto = etEditor.getText().toString();
+            text = etEditor.getText().toString();
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     if (intent != null && intent.getData() != null) {
@@ -166,9 +165,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                         if(note.getRealPath() == null){
-                            FileUtil.writeFile(note.getPath(), texto, this);
+                            FileUtil.writeFile(note.getPath(), text, this);
                         } else {
-                            FileUtil.overwriteFile(note.getRealPath(), texto, this);
+                            FileUtil.overwriteFile(note.getRealPath(), text, this);
                         }
 
                         saveButton.setIcon(R.drawable.file_save);
@@ -185,14 +184,28 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
                         Uri uri = intent.getData();
 
+                        Intent intentOpenFile = new Intent(this, EditorActivity.class);
+                        intentOpenFile.putExtra(resources.getString(R.string.extra_intent_uri_file), uri);
+                        this.finish();
+                        startActivity(intentOpenFile);
+
+                        /*
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
                         note.setPath(uri);
                         handlePathOz.getRealPath(uri);
+                        text = FileUtil.readFile(uri, this);
+                        etEditor.setText(text);
 
-                        texto = FileUtil.readFile(uri, this);
-                        etEditor.setText(texto);
+                        // initialize a new undo/redo watcher
+                        textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
+                        // set save icon, this is necessary
+                        saveButton.setIcon(R.drawable.file_save);
+
+                        //updateNoteOnList();
+                        */
                     }
                     break;
                 case Activity.RESULT_CANCELED:
@@ -216,10 +229,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             note.setlastOpened(LocalDateTime.now());
             taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {
                 if(dataResult > 0){
-                    RecyclerViewNotesManager.insertOrUpdateItem(note);
-
-                    // update note position to first in mainActivity list
-                    RecyclerViewNotesManager.moveItem(0, note);
+                    updateNoteOnList();
                 }
             });
         }
@@ -262,8 +272,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if (id == R.id.save_file){   // overwrite existing file or create it
 
             if (note.getPath() != null) {
-                texto = etEditor.getText().toString();
-                boolean result = FileUtil.overwriteFile(note.getRealPath(), texto, this);
+                text = etEditor.getText().toString();
+                boolean result = FileUtil.overwriteFile(note.getRealPath(), text, this);
                 if(result) {
                     getSupportActionBar().setTitle(note.getTitle());
                     saveButton.setIcon(R.drawable.file_save);
@@ -317,8 +327,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
              int start = Math.max(etEditor.getSelectionStart(), 0);
              int end = Math.max(etEditor.getSelectionEnd(), 0);
              if(start != end){
-                 texto = etEditor.getText().toString();
-                 Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
+                 text = etEditor.getText().toString();
+                 Boolean r = myClipboardManager.copyToClipboard(this, text.substring(start, end));
                  etEditor.getText().replace(Math.min(start, end), Math.max(start, end), "", 0, 0);
              }
 
@@ -329,9 +339,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             int end = etEditor.getSelectionEnd();
 
             if( start != end){
-                texto = etEditor.getText().toString();
+                text = etEditor.getText().toString();
 
-                Boolean r = myClipboardManager.copyToClipboard(this, texto.substring(start, end));
+                Boolean r = myClipboardManager.copyToClipboard(this, text.substring(start, end));
                 if (r) Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
             }
 
@@ -376,5 +386,27 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     };
 
+
+    private void updateNoteOnList(){
+        RecyclerViewNotesManager.insertOrUpdateItem(note);
+
+        // update note position to first in mainActivity list
+        RecyclerViewNotesManager.moveItem(0, note);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Detecting a long press of the back button via onLongPress is broken in Android N.
+        // To work around this, use a postDelayed, which is supported in all versions.
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
+            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            cdd.show();
+            //return super.onKeyDown(keyCode, event);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
 }

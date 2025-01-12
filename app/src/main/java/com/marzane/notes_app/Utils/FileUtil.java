@@ -34,7 +34,7 @@ public class FileUtil {
      *
      * @param uri
      * @param activity
-     * @return String
+     * @return String | null
      */
     public static String readFile(Uri uri, Activity activity){
         String textoLeer = "";
@@ -155,6 +155,7 @@ public class FileUtil {
 
         return result;
     }
+
 
     /**
      * @param activity
