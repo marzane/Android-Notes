@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
+import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.Threads.task.ListAllNotesTask;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Utils.FileUtil;
@@ -40,6 +41,8 @@ import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
+
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -49,6 +52,15 @@ public class MainActivity extends AppCompatActivity{
     private int screen_width, screen_height;
     private Resources resources;
     private CustomDialogYesNo cd;
+    private SettingsService settingsService;
+    private Locale locale;
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable("LOCALE", locale);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +70,16 @@ public class MainActivity extends AppCompatActivity{
         if(!checkStoragePermissions()) requestForStoragePermissions();
 
         resources = getResources();
+        settingsService = new SettingsService();
+
+
+        if (savedInstanceState != null) {
+            locale = (Locale) savedInstanceState.getSerializable("LOCALE");
+        } else {
+            locale = new Locale(settingsService.getLanguage(this));
+        }
+
+        settingsService.setLocale(locale.getLanguage(), this);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -83,6 +105,17 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+
+    @Override
+    protected void onResume() {
+
+        if(settingsService.isLanguageWasChanged()){
+            locale = new Locale(settingsService.getLanguage(this));
+            this.recreate();
+        }
+
+        super.onResume();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {

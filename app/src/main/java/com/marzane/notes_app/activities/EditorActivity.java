@@ -2,7 +2,6 @@ package com.marzane.notes_app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,9 +22,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.preference.PreferenceManager;
 
 import com.marzane.notes_app.ActionValues;
+import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.Utils.TextViewUndoRedo;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
@@ -39,6 +38,7 @@ import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
 import com.marzane.notes_app.models.NoteModel;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import br.com.onimur.handlepathoz.HandlePathOz;
 import br.com.onimur.handlepathoz.HandlePathOzListener;
@@ -53,6 +53,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private Resources resources;
     private TextViewUndoRedo textViewUndoRedo;
     private MyClipboardManager myClipboardManager = new MyClipboardManager();
+    private SettingsService settingsService;
+    private Locale locale;
 
     // layout elements
     private EditText etEditor;
@@ -62,6 +64,12 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static TaskRunner taskRunner = new TaskRunner();
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable("LOCALE", locale);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
@@ -69,9 +77,17 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         note = new NoteModel();
         resources = getResources();
         handlePathOz = new HandlePathOz(this, this);
+        settingsService = new SettingsService();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        fontSize = sharedPreferences.getInt(resources.getString(R.string.font_size_setting), 17);
+        if (savedInstanceState != null) {
+            locale = (Locale) savedInstanceState.getSerializable("LOCALE");
+        } else {
+            locale = new Locale(settingsService.getLanguage(this));
+        }
+
+        settingsService.setLocale(locale.getLanguage(), this);
+
+        fontSize = settingsService.getFontSize(this);
 
         // initialize toolbar
         Toolbar toolbarTop = findViewById(R.id.toolbar_editor);

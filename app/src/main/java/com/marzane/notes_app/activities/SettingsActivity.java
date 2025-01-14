@@ -2,6 +2,7 @@ package com.marzane.notes_app.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import java.util.Locale;
 import android.content.res.Configuration;
@@ -16,13 +17,17 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
 import com.marzane.notes_app.R;
+import com.marzane.notes_app.SettingsService;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private static SettingsService settingsService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+        settingsService = new SettingsService();
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -47,13 +52,10 @@ public class SettingsActivity extends AppCompatActivity {
             if (languagePref != null) {
                 languagePref.setOnPreferenceChangeListener((preference, newValue) -> {
 
-                    String lang = Resources.getSystem().getConfiguration().locale.getLanguage();
+                    String lang = newValue.toString();
 
-                    if(!newValue.toString().equals("default")){
-                        lang = newValue.toString();
-                    }
-
-                    setLocale(preference.getContext(), lang);
+                    settingsService.setLocale(lang, preference.getContext());
+                    settingsService.setLanguageChangedFlag();
 
                     Intent intent = new Intent(preference.getContext(), SettingsActivity.class);
                     getActivity().finish();
@@ -67,25 +69,11 @@ public class SettingsActivity extends AppCompatActivity {
             if(fontSizeBar != null){
                 fontSizeBar.setOnPreferenceChangeListener((preference, newValue) -> {
                     Toast.makeText(getContext(), newValue.toString(), Toast.LENGTH_SHORT).show();
-                    /*
-                    SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("fontSize", newValue.toString());
-                    editor.apply();
-                    */
+
                     return true;
                 });
             }
 
-        }
-
-        public void setLocale(Context context, String lang) {
-            Locale myLocale = new Locale(lang);
-            Resources res = getResources();
-            DisplayMetrics dm = res.getDisplayMetrics();
-            Configuration conf = res.getConfiguration();
-            conf.locale = myLocale;
-            res.updateConfiguration(conf, dm);
         }
 
 
