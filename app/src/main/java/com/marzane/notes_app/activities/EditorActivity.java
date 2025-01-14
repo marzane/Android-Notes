@@ -165,7 +165,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                         if(note.getRealPath() == null){
-                            FileUtil.writeFile(note.getPath(), text, this);
+                            FileUtil.writeFile(uri, text, this);
                         } else {
                             FileUtil.overwriteFile(note.getRealPath(), text, this);
                         }
@@ -189,23 +189,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         this.finish();
                         startActivity(intentOpenFile);
 
-                        /*
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                        note.setPath(uri);
-                        handlePathOz.getRealPath(uri);
-                        text = FileUtil.readFile(uri, this);
-                        etEditor.setText(text);
-
-                        // initialize a new undo/redo watcher
-                        textViewUndoRedo = new TextViewUndoRedo(etEditor);
-
-                        // set save icon, this is necessary
-                        saveButton.setIcon(R.drawable.file_save);
-
-                        //updateNoteOnList();
-                        */
                     }
                     break;
                 case Activity.RESULT_CANCELED:

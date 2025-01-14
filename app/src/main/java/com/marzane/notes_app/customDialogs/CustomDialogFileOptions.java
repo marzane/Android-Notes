@@ -50,14 +50,14 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
         info = findViewById(R.id.button_file_info);
         removeList = findViewById(R.id.button_delete_from_list);
         delete = findViewById(R.id.button_delete_file);
-        rename = findViewById(R.id.button_rename);
+        //rename = findViewById(R.id.button_rename);
 
         back.setOnClickListener(this);
         edit.setOnClickListener(this);
         info.setOnClickListener(this);
         removeList.setOnClickListener(this);
         delete.setOnClickListener(this);
-        rename.setOnClickListener(this);
+        //rename.setOnClickListener(this);
         tvMessage.setText(note.getTitle());
     }
 
@@ -91,12 +91,17 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
 
-        } else if (id == R.id.button_rename){
+        }
+        /*
+
+        else if (id == R.id.button_rename){
             String message = resources.getString(R.string.dialog_rename_file);
             CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.RENAME_FILE.getID(), note);
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
         }
+
+         */
 
         dismiss();
     }

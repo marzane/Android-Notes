@@ -1,11 +1,14 @@
 package com.marzane.notes_app.models;
 
+import android.app.Activity;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class NoteModel implements Serializable {
+
+public class NoteModel implements Serializable, Cloneable {
 
     private int id;
     private String title;
@@ -82,19 +85,24 @@ public class NoteModel implements Serializable {
                 : (object == this);
     }
 
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
-    public void updateTitle(String newTitle){
+    /*
+    // TODO: arreglar problema uri provider
+    public void updateTitleAndRealPath(Activity activity, String newTitle){
         String oldTitle = getTitle();
         setTitle(newTitle);
-
-        // update path
-        String path = getPath().toString();
-        String newPath = path.replace(oldTitle, newTitle);
-        setPath(Uri.parse(newPath));
 
         // update realPath
         String realPath = getRealPath();
         String newRealPath = realPath.replace(oldTitle, newTitle);
         setRealPath(newRealPath);
+
+        // ...
     }
+    */
 }

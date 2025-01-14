@@ -45,19 +45,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/button_rename"
+            android:id="@+id/button_file_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="30">
             <ImageView
                 style="@style/dialog_button"
-                android:src="@drawable/pencil_48px"
+                android:src="@drawable/document_48px"
                 android:layout_gravity="center"/>
-
             <TextView
                 style="@style/dialog_text_option"
-                android:text="@string/dialog_option_rename"/>
+                android:text="@string/dialog_option_info" />
         </LinearLayout>
 
 
@@ -102,20 +101,23 @@
                 android:text="@string/dialog_option_remove_from_list"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/button_file_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="30">
-            <ImageView
-                style="@style/dialog_button"
-                android:src="@drawable/document_48px"
-                android:layout_gravity="center"/>
-            <TextView
-                style="@style/dialog_text_option"
-                android:text="@string/dialog_option_info" />
-        </LinearLayout>
+        <!--
+<LinearLayout
+    android:id="@+id/button_rename"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_weight="30">
+    <ImageView
+        style="@style/dialog_button"
+        android:src="@drawable/pencil_48px"
+        android:layout_gravity="center"/>
+
+    <TextView
+        style="@style/dialog_text_option"
+        android:text="@string/dialog_option_rename"/>
+</LinearLayout>
+-->
 
     </LinearLayout>
 

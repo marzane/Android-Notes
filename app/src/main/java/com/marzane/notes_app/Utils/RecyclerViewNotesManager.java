@@ -1,5 +1,7 @@
 package com.marzane.notes_app.Utils;
 
+import android.provider.ContactsContract;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.models.NoteModel;
@@ -56,12 +58,13 @@ public class RecyclerViewNotesManager {
     }
 
 
-    public static int searchItem(){
-        int count = 0;
-        ArrayList<NoteModel> resultItems = (ArrayList<NoteModel>) arrayRecentNotes.clone();
+    public static void replaceItem(NoteModel oldNote, NoteModel newNote){
+        int position = arrayRecentNotes.indexOf(oldNote);
+        if (position > -1){
+            arrayRecentNotes.set(position, newNote);
+            rvNoteList.getAdapter().notifyItemChanged(position);
 
-
-        return count;
+        }
     }
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +19,7 @@ import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
+import com.marzane.notes_app.Threads.task.UpdateTitleAndPath;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
 import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
@@ -116,35 +118,41 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
 
             }
 
-
+            /*
             if(action == ActionValues.RENAME_FILE.getID()){
                 String newName = etPath.getText().toString();
 
                 if(!newName.isEmpty() || !newName.equals(note.getTitle())){
 
-                    NoteModel editedNote = note;
-                    editedNote.updateTitle(newName);
+                    try{
+                        NoteModel editedNote = (NoteModel) note.clone();
+                        editedNote.updateTitleAndRealPath(activity, newName);
 
-                    File editedFile = new File(editedNote.getRealPath());
+                        File editedFile = new File(editedNote.getRealPath());
 
-                    if(!editedFile.exists()){
-                        // no existe; se puede usar el nombre nuevo
-                        // TODO: renombrar
+                        if(!editedFile.exists()){
+                            // no existe; se puede usar el nombre nuevo
+                            if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
 
-                        if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
+                                taskRunner.executeAsync(new UpdateTitleAndPath(activity, note, editedNote), result -> {
+                                    if(result > 0){
+                                        RecyclerViewNotesManager.replaceItem(note, editedNote);
+                                        Toast.makeText(activity, activity.getResources().getString(R.string.file_renamed), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } else {
+                            // existe; se cancela renombrar
+                            Toast.makeText(activity, "ya existe un archivo con ese nombre", Toast.LENGTH_LONG).show();
 
-                            taskRunner.executeAsync(new InsertOrUpdateFile(activity, editedNote), result -> {
-
-                                Toast.makeText(activity, activity.getResources().getString(R.string.file_renamed), Toast.LENGTH_SHORT).show();
-
-                            });
                         }
-                    } else {
-                        // existe; se cancela renombrar
+                    } catch (Exception ex){
+                        Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 }
             }
+            */
 
 
         } else if(id == R.id.button_cancel){

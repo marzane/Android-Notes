@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ej_ficheros_texto"
         tools:targetApi="31">
+
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="false"

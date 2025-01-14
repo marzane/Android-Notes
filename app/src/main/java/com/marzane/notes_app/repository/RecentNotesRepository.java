@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 
 import com.marzane.notes_app.Utils.DateUtil;
 import com.marzane.notes_app.models.NoteModel;
@@ -212,9 +213,34 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath().toString());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, modelo.getRealPath());
 
-        // Which row to update, based on the title
+        // Which row to update, based on the id
         String selection = recentNoteTable._ID + " LIKE ?";
         String[] selectionArgs = { modelo.getId() + "" };
+
+        int count = db.update(
+                recentNoteTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+        return count;
+    }
+
+
+    public int updateNoteNoId(NoteModel model, NoteModel newModel) {
+
+        db = dbHelper.getWritableDatabase();
+
+        // New value for one column
+        ContentValues values = new ContentValues();
+        values.put(recentNoteTable.COLUMN_NAME_TITLE, newModel.getTitle());
+        values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(newModel.getLastOpened()));
+        values.put(recentNoteTable.COLUMN_NAME_PATH, newModel.getPath().toString());
+        values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, newModel.getRealPath());
+
+        // Which row to update, based on the path
+        String selection = recentNoteTable.COLUMN_NAME_PATH + " LIKE ?";
+        String[] selectionArgs = { model.getPath().toString() };
 
         int count = db.update(
                 recentNoteTable.TABLE_NAME,

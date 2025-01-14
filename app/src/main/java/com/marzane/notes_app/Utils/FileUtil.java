@@ -126,22 +126,20 @@ public class FileUtil {
     /**
      *
      * @param activity
-     * @param path "dir1/dir2/file.txt"
+     * @param realPath "dir1/dir2/file.txt"
      * @param newName "newName.txt"
      * @return boolean
      */
-    public static boolean renameFile(Activity activity, String path, String newName) {
+    public static boolean renameFile(Activity activity, String realPath, String newName) {
         Boolean result = false;
 
         try{
-            String currentFileName = path.substring(path.lastIndexOf("/") + 1); // original file name
-            //currentFileName = currentFileName.substring(1);
-            //Log.i("Current file name", currentFileName);
+            //String currentFileName = realPath.substring(realPath.lastIndexOf("/") + 1); // original file name
 
-            File directory = new File(path.substring(0, path.lastIndexOf("/")));   // directory
+            File directory = new File(realPath.substring(0, realPath.lastIndexOf("/")));   // directory
 
             // if directory exists
-            File from      = new File(path);                // original file
+            File from      = new File(realPath);                // original file
             File to        = new File(directory, newName);  // future renamed file
 
             // if File from exists
