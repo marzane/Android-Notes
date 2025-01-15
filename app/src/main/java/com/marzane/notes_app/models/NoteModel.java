@@ -1,6 +1,5 @@
 package com.marzane.notes_app.models;
 
-import android.app.Activity;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -13,26 +12,26 @@ public class NoteModel implements Serializable, Cloneable {
     private int id;
     private String title;
     private LocalDateTime lastOpened;
-    private Uri path;
+    private String path;
     private String realPath;
 
     public NoteModel(){};
 
     // constructor only title and path
-    public NoteModel(String titulo, Uri path) {
+    public NoteModel(String titulo, String path) {
         this.title = titulo;
         this.path = path;
     }
 
     // constructor only title, lastEdit and path
-    public NoteModel(String titulo, LocalDateTime lastOpened, Uri path) {
+    public NoteModel(String titulo, LocalDateTime lastOpened, String path) {
         this.lastOpened = lastOpened;
         this.title = titulo;
         this.path = path;
     }
 
     // complete constructor
-    public NoteModel(int id, String titulo, LocalDateTime lastEdit, Uri path, String realPath) {
+    public NoteModel(int id, String titulo, LocalDateTime lastEdit, String path, String realPath) {
         this.lastOpened = lastEdit;
         this.id = id;
         this.title = titulo;
@@ -60,11 +59,11 @@ public class NoteModel implements Serializable, Cloneable {
         this.title = title;
     }
 
-    public Uri getPath() {
+    public String getPath() {
         return path;
     }
 
-    public void setPath(Uri path) {
+    public void setPath(String path) {
         this.path = path;
     }
 
@@ -91,18 +90,4 @@ public class NoteModel implements Serializable, Cloneable {
         return super.clone();
     }
 
-    /*
-    // TODO: arreglar problema uri provider
-    public void updateTitleAndRealPath(Activity activity, String newTitle){
-        String oldTitle = getTitle();
-        setTitle(newTitle);
-
-        // update realPath
-        String realPath = getRealPath();
-        String newRealPath = realPath.replace(oldTitle, newTitle);
-        setRealPath(newRealPath);
-
-        // ...
-    }
-    */
 }

@@ -5,6 +5,7 @@ package com.marzane.notes_app.Utils;
  * RESTRICTIONS OR ANY WARRANTY.
  */
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import android.content.SharedPreferences;
@@ -13,13 +14,12 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
-import android.widget.EditText;
 import android.widget.TextView;
 
 /**
  * A generic undo/redo implementation for TextViews.
  */
-public class TextViewUndoRedo {
+public class TextViewUndoRedo implements Serializable {
 
     /**
      * Is undo/redo being performed? This member signals if an undo/redo

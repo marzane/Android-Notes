@@ -62,10 +62,24 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private static HandlePathOz handlePathOz;
     private static TaskRunner taskRunner = new TaskRunner();
+    
+    private static final String LOCALE_STATE = "LOCALE";
+    private static final String NOTE_STATE = "NOTE";
+    private static final String TEXT_STATE = "TEXT";
+    private static final String UNDO_REDO_STATE = "UNDOREDO";
+    private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
+    private static final String TITLE_STATE = "TITLE";
+
+    private boolean unsavedChanged = false;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable("LOCALE", locale);
+        savedInstanceState.putSerializable(LOCALE_STATE, locale);
+        savedInstanceState.putSerializable(NOTE_STATE, note);
+        savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
+        //savedInstanceState.putSerializable(UNDO_REDO_STATE, textViewUndoRedo);
+        savedInstanceState.putBoolean(UNSAVED_STATE, unsavedChanged);
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -74,20 +88,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
-        note = new NoteModel();
         resources = getResources();
         handlePathOz = new HandlePathOz(this, this);
         settingsService = new SettingsService();
-
-        if (savedInstanceState != null) {
-            locale = (Locale) savedInstanceState.getSerializable("LOCALE");
-        } else {
-            locale = new Locale(settingsService.getLanguage(this));
-        }
-
-        settingsService.setLocale(locale.getLanguage(), this);
-
-        fontSize = settingsService.getFontSize(this);
 
         // initialize toolbar
         Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
@@ -95,11 +98,29 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
-
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
-        etEditor.setTextSize(fontSize);
-        etEditor.addTextChangedListener(textWatcher);
         etEditor.requestFocus();
+
+        if (savedInstanceState != null) {
+            locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
+            note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
+            text = savedInstanceState.getString(TEXT_STATE);
+            //textViewUndoRedo = (TextViewUndoRedo) savedInstanceState.getSerializable(UNDO_REDO_STATE);
+            unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
+
+            Toast.makeText(this, unsavedChanged + "", Toast.LENGTH_LONG).show();
+
+        } else {
+            locale = new Locale(settingsService.getLanguage(this));
+            note = new NoteModel();
+
+        }
+
+        settingsService.setLocale(locale.getLanguage(), this);
+
+        fontSize = settingsService.getFontSize(this);
+        etEditor.setTextSize(fontSize);
+
 
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
         if(note.getTitle() == null) {
@@ -109,20 +130,20 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             getSupportActionBar().setTitle(note.getTitle());
         }
 
-
         intent = getIntent();
         Bundle b = intent.getExtras();  // en el caso de querer abrir un archivo que ya existe
                                         // deberia recibir la uri
         if(b!=null)
         {
-            Uri uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
+            String uriString = (String) b.get(resources.getString(R.string.extra_intent_uri_file));
+            Uri uriFile = Uri.parse(uriString);
 
             if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
                 getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                note.setPath(uriFile);
+                note.setPath(uriFile.toString());
                 text = FileUtil.readFile(uriFile, this);
 
                 if(text == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
@@ -138,14 +159,32 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                     //show keyboard
                     InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    
+                    intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
                 }
 
             }
 
         }
 
-        textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        etEditor.removeTextChangedListener(textWatcher);
+        super.onStart();
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        if(textViewUndoRedo == null) textViewUndoRedo = new TextViewUndoRedo(etEditor);
+        etEditor.addTextChangedListener(textWatcher);
+        super.onResume();
     }
 
 
@@ -175,8 +214,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 case Activity.RESULT_OK:
                     if (intent != null && intent.getData() != null) {
                         Uri uri = intent.getData();
-                        note.setPath(uri);
-                        handlePathOz.getRealPath(note.getPath());
+                        note.setPath(uri.toString());
+                        handlePathOz.getRealPath(uri);
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
@@ -186,7 +225,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                             FileUtil.overwriteFile(note.getRealPath(), text, this);
                         }
 
-                        saveButton.setIcon(R.drawable.file_save);
+                        unsavedChanged = false;
+                        updateUnsavedChangesState();
 
                     }
                     break;
@@ -246,6 +286,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         getMenuInflater().inflate(R.menu.menu_editor, menu);
 
         saveButton = menu.findItem(R.id.save_file);
+        updateUnsavedChangesState();
 
         // Inflate and initialize the bottom menu
         ActionMenuView bottomBar = findViewById(R.id.bottom_tools);
@@ -274,8 +315,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 text = etEditor.getText().toString();
                 boolean result = FileUtil.overwriteFile(note.getRealPath(), text, this);
                 if(result) {
-                    getSupportActionBar().setTitle(note.getTitle());
-                    saveButton.setIcon(R.drawable.file_save);
+                    unsavedChanged = false;
+                    updateUnsavedChangesState();
                 }
             } else {
                 saveFileAs();
@@ -374,8 +415,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            getSupportActionBar().setTitle(note.getTitle() + "*");
-            if(saveButton != null) saveButton.setIcon(R.drawable.file_unsaved);
+            unsavedChanged = true;
+            updateUnsavedChangesState();
         }
 
         @Override
@@ -384,6 +425,17 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         }
 
     };
+
+    private void updateUnsavedChangesState(){
+        if(unsavedChanged){ // si hay cambios sin guardar
+            getSupportActionBar().setTitle(note.getTitle() + "*");
+            if(saveButton != null) saveButton.setIcon(R.drawable.file_unsaved);
+        } else {
+            getSupportActionBar().setTitle(note.getTitle());
+            if(saveButton != null) saveButton.setIcon(R.drawable.file_save);
+        }
+
+    }
 
 
     private void updateNoteOnList(){

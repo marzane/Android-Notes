@@ -69,7 +69,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
             String path = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_PATH));
             String realPath = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_REAL_PATH));
 
-            nota = new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), Uri.parse(path), realPath);
+            nota = new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), path, realPath);
         } else {
             nota = null;
         }
@@ -123,7 +123,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
             String path = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_PATH));
             String realPath = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_REAL_PATH));
 
-            nota = new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), Uri.parse(path), realPath);
+            nota = new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), path, realPath);
         } else {
             nota = null;
         }
@@ -174,7 +174,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
                 String path = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_PATH));
                 String realPath = cursor.getString(cursor.getColumnIndexOrThrow(recentNoteTable.COLUMN_NAME_REAL_PATH));
 
-                noteList.add(new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), Uri.parse(path), realPath));
+                noteList.add(new NoteModel(itemId, title, DateUtil.StringToLocalDateTime(lastEdit), path, realPath));
             }
             cursor.close();
         }
@@ -191,7 +191,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, modelo.getTitle());
         values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastOpened()));
-        values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath().toString());
+        values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, modelo.getRealPath());
 
         // Insert the new row, returning the primary key value of the new row or -1
@@ -210,7 +210,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, modelo.getTitle());
         values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(modelo.getLastOpened()));
-        values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath().toString());
+        values.put(recentNoteTable.COLUMN_NAME_PATH, modelo.getPath());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, modelo.getRealPath());
 
         // Which row to update, based on the id
@@ -235,12 +235,12 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
         ContentValues values = new ContentValues();
         values.put(recentNoteTable.COLUMN_NAME_TITLE, newModel.getTitle());
         values.put(recentNoteTable.COLUMN_NAME_LASTEDIT, DateUtil.LocalDateTimeToString(newModel.getLastOpened()));
-        values.put(recentNoteTable.COLUMN_NAME_PATH, newModel.getPath().toString());
+        values.put(recentNoteTable.COLUMN_NAME_PATH, newModel.getPath());
         values.put(recentNoteTable.COLUMN_NAME_REAL_PATH, newModel.getRealPath());
 
         // Which row to update, based on the path
         String selection = recentNoteTable.COLUMN_NAME_PATH + " LIKE ?";
-        String[] selectionArgs = { model.getPath().toString() };
+        String[] selectionArgs = { model.getPath() };
 
         int count = db.update(
                 recentNoteTable.TABLE_NAME,
@@ -263,7 +263,7 @@ public class RecentNotesRepository extends DatabaseContrat.DataBaseDbHelper impl
 
         // Which row to update, based on the path column
         String selection = recentNoteTable.COLUMN_NAME_PATH + " LIKE ?";
-        String[] selectionArgs = { modelo.getPath().toString() };
+        String[] selectionArgs = { modelo.getPath() };
 
         int count = db.update(
                 recentNoteTable.TABLE_NAME,
