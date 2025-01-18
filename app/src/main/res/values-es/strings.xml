@@ -26,15 +26,14 @@
     <string name="deleted_file_ok">archivo eliminado</string>
     <string name="copy_to_clipboard">copiado al portapapeles</string>
     <string name="file_saved">archivo guardado</string>
-    <string name="file_renamed">Archivo renombrado</string>
     <string name="general_header">General</string>
     <string name="editor_header">Editor</string>
     <string name="language_title">Idioma</string>
     <string name="date_format">dd/MM/yyyy</string>
+    <string name="autosave_title">Guardado automático</string>
     <string name="permission_storage_granted">Permisos de almacenamiento concedidos</string>
     <string name="permission_storage_denied">Permisos de almacenamiento denegados: Esta aplicación necesita acceder al almacenamiento del dispositivo para leer y escribir archivos.</string>
     <string name="fontSize_title">Tamaño de letra</string>
     <string name="opening_file">abriendo archivo</string>
-    <string name="dialog_option_rename">renombrar</string>
-    <string name="dialog_rename_file">Cambiar nombre: Esta acción no se puede deshacer:</string>
+    <string name="autosave_description">Guarda automáticamente cada cambio realizado en el texto</string>
 </resources>

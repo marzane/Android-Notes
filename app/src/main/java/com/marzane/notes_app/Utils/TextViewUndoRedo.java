@@ -14,7 +14,9 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A generic undo/redo implementation for TextViews.
@@ -199,6 +201,7 @@ public class TextViewUndoRedo implements Serializable {
         String hash = sp.getString(prefix + ".hash", null);
         if (hash == null) {
             // No state to be restored.
+            Log.d("TAG", "restorePersistentState: null");
             return true;
         }
 
@@ -240,7 +243,7 @@ public class TextViewUndoRedo implements Serializable {
     /**
      * Keeps track of all the edit history of a text.
      */
-    private final class EditHistory {
+    private final class EditHistory implements Serializable{
 
         /**
          * The position from which an EditItem will be retrieved when getNext()
@@ -339,7 +342,7 @@ public class TextViewUndoRedo implements Serializable {
     /**
      * Represents the changes performed by a single edit operation.
      */
-    private final class EditItem {
+    private final class EditItem implements Serializable{
         private final int mmStart;
         private final CharSequence mmBefore;
         private final CharSequence mmAfter;
@@ -358,7 +361,7 @@ public class TextViewUndoRedo implements Serializable {
     /**
      * Class that listens to changes in the text.
      */
-    private final class EditTextChangeListener implements TextWatcher {
+    private final class EditTextChangeListener implements TextWatcher, Serializable {
 
         /**
          * The text that will be removed by the change event.

@@ -38,7 +38,15 @@
                 app:defaultValue="17"
                 android:max="40"
                 app:min="10"
+                app:showSeekBarValue="true"
                 />
+
+            <SwitchPreference
+                app:key="@string/autosave_setting"
+                app:title="@string/autosave_title"
+                app:summary="@string/autosave_description"
+                android:defaultValue="false"
+                app:shouldDisableView="true"/>
 
     </PreferenceCategory>
 

@@ -22,7 +22,7 @@ public class ListByPathTask implements Callable<NoteModel> {
     public NoteModel call() throws Exception {
 
         // compruebo si la nota ya existe en la bd
-        NoteModel noteResult = notesRepository.listByPath(note.getPath().toString());
+        NoteModel noteResult = notesRepository.listByPath(note.getPath());
 
         return noteResult;
     }

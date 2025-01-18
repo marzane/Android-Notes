@@ -68,7 +68,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final String TEXT_STATE = "TEXT";
     private static final String UNDO_REDO_STATE = "UNDOREDO";
     private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
-    private static final String TITLE_STATE = "TITLE";
 
     private boolean unsavedChanged = false;
 
@@ -77,7 +76,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         savedInstanceState.putSerializable(LOCALE_STATE, locale);
         savedInstanceState.putSerializable(NOTE_STATE, note);
         savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
-        //savedInstanceState.putSerializable(UNDO_REDO_STATE, textViewUndoRedo);
         savedInstanceState.putBoolean(UNSAVED_STATE, unsavedChanged);
 
         super.onSaveInstanceState(savedInstanceState);
@@ -105,10 +103,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
             note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
             text = savedInstanceState.getString(TEXT_STATE);
-            //textViewUndoRedo = (TextViewUndoRedo) savedInstanceState.getSerializable(UNDO_REDO_STATE);
             unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
 
-            Toast.makeText(this, unsavedChanged + "", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, unsavedChanged + "", Toast.LENGTH_SHORT).show();
 
         } else {
             locale = new Locale(settingsService.getLanguage(this));
@@ -135,8 +132,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                                         // deberia recibir la uri
         if(b!=null)
         {
-            String uriString = (String) b.get(resources.getString(R.string.extra_intent_uri_file));
-            Uri uriFile = Uri.parse(uriString);
+            Uri uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
 
             if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
@@ -167,7 +163,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
-
+        textViewUndoRedo = new TextViewUndoRedo(etEditor);
 
     }
 
@@ -182,7 +178,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     @Override
     protected void onResume() {
-        if(textViewUndoRedo == null) textViewUndoRedo = new TextViewUndoRedo(etEditor);
         etEditor.addTextChangedListener(textWatcher);
         super.onResume();
     }

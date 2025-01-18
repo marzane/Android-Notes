@@ -1,14 +1,7 @@
 package com.marzane.notes_app.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import java.util.Locale;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,7 +61,6 @@ public class SettingsActivity extends AppCompatActivity {
             SeekBarPreference fontSizeBar = findPreference(getResources().getString(R.string.font_size_setting));
             if(fontSizeBar != null){
                 fontSizeBar.setOnPreferenceChangeListener((preference, newValue) -> {
-                    Toast.makeText(getContext(), newValue.toString(), Toast.LENGTH_SHORT).show();
 
                     return true;
                 });

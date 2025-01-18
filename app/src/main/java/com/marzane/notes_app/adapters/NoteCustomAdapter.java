@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,8 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         viewHolder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(viewHolder.itemView.getContext(), EditorActivity.class);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.putExtra(resources.getString(R.string.extra_intent_uri_file), note.getPath());
+            Uri uri = Uri.parse(note.getPath());
+            intent.putExtra(resources.getString(R.string.extra_intent_uri_file), uri);
             viewHolder.itemView.getContext().startActivity(intent);
         });
 
