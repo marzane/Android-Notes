@@ -19,17 +19,18 @@
         android:title="paste"
         app:showAsAction="always"/>
 
+    <!--
     <item
         android:id="@+id/button_undo"
         android:icon="@drawable/undo_48px"
         android:title="undo"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/button_redo"
         android:icon="@drawable/redo_48px"
         android:title="redo"
         app:showAsAction="always" />
-
+-->
 
 </menu>

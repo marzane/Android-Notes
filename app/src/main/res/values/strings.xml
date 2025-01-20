@@ -59,14 +59,17 @@
     <string name="language_title">Language</string>
     <string name="fontSize_title">Font size</string>
     <string name="autosave_title">Autosave</string>
+    <string name="show_toolbar_title">Show toolbar</string>
 
     <!-- setting descriptions -->
     <string name="autosave_description">Automatically saves every change made to the text</string>
+    <string name="show_toolbar_description">Show text editing tools at the bottom of the screen</string>
 
     <!-- setting properties -->
     <string name="language_setting" translatable="false">language</string>
     <string name="font_size_setting" translatable="false">fontSize</string>
     <string name="autosave_setting" translatable="false">autosave</string>
+    <string name="show_toolbar_setting" translatable="false">showtoolbar</string>
 
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>

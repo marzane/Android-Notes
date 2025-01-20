@@ -74,8 +74,9 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
         no.setOnClickListener(this);
         tvMessage.setText(message);
 
+        etPath.setFocusable(false);
 
-        if(action == ActionValues.REMOVE_FROM_LIST.getID() || action == ActionValues.RENAME_FILE.getID()){
+        if(action == ActionValues.REMOVE_FROM_LIST.getID()){
             etPath.setText(note.getTitle());
 
         } else if (action == ActionValues.DELETE_FILE.getID()){

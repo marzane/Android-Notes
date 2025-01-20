@@ -34,8 +34,22 @@ public class SettingsService {
         return language;
     }
 
-    public boolean isAutosavingActive() {
-        return auto_save_current_file;
+    public boolean isAutosavingActive(Context context) {
+        boolean isActive = false;
+
+        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        isActive = sharedPreferences.getBoolean(context.getResources().getString(R.string.autosave_setting), false);
+
+        return isActive;
+    }
+
+    public boolean isToolbarActive(Context context) {
+        boolean isActive = false;
+
+        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        isActive = sharedPreferences.getBoolean(context.getResources().getString(R.string.show_toolbar_setting), true);
+
+        return isActive;
     }
 
      public  void setLanguageChangedFlag() {

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -81,11 +80,9 @@ public class FileUtil {
             bw.flush();
             bw.close();
 
-            Toast.makeText(activity, activity.getResources().getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
             return true;
 
         } catch (IOException ex) {
-            //Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_LONG).show();
             cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
             cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             cdd.show();
@@ -110,7 +107,6 @@ public class FileUtil {
             bw.flush();
             bw.close();
 
-            Toast.makeText(activity, activity.getResources().getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
             return true;
 
         } catch (IOException ex) {

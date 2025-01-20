@@ -3,12 +3,6 @@
 
     <PreferenceCategory app:title="@string/general_header">
 
-<!--
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
--->
         <ListPreference
             app:key="@string/language_setting"
             app:defaultValue="default"
@@ -20,18 +14,7 @@
     </PreferenceCategory>
 
         <PreferenceCategory app:title="@string/editor_header">
-<!--
-            <SwitchPreferenceCompat
-                app:key="sync"
-                app:title="@string/sync_title" />
 
-            <SwitchPreferenceCompat
-                app:dependency="sync"
-                app:key="attachment"
-                app:summaryOff="@string/attachment_summary_off"
-                app:summaryOn="@string/attachment_summary_on"
-                app:title="@string/attachment_title" />
--->
             <SeekBarPreference
                 app:title="@string/fontSize_title"
                 app:key="@string/font_size_setting"
@@ -46,6 +29,13 @@
                 app:title="@string/autosave_title"
                 app:summary="@string/autosave_description"
                 android:defaultValue="false"
+                app:shouldDisableView="true"/>
+
+            <SwitchPreference
+                app:key="@string/show_toolbar_setting"
+                app:title="@string/show_toolbar_title"
+                app:summary="@string/show_toolbar_description"
+                android:defaultValue="true"
                 app:shouldDisableView="true"/>
 
     </PreferenceCategory>
