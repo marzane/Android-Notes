@@ -5,14 +5,21 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/barra_superior_fondo_repeat</item>
+        <item name="android:background">@drawable/shape_toolbar</item>
+    </style>
+
+    <style name="content_toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/shape_toolbar</item>
     </style>
 
     <style name="toolsEditor">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/brown_gradient</item>
     </style>
 
     <style name="fondoPantalla">
@@ -97,18 +104,5 @@
         <item name="android:textColor">@color/grey</item>
         <item name="android:background">@drawable/shape_item_input_dialog</item>
     </style>
-<!--
-    <style name="dialog_edit_none">
-        <item name="android:inputType">none</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">15dp</item>
-        <item name="android:padding">13dp</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:textColor">@color/grey</item>
-        <item name="android:background">@drawable/shape_item_input_dialog</item>
-    </style>
--->
+
 </resources>

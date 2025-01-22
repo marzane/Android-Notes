@@ -4,9 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.provider.BaseColumns;
-import android.provider.ContactsContract;
 
 import com.marzane.notes_app.Utils.DateUtil;
 import com.marzane.notes_app.models.NoteModel;

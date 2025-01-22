@@ -1,7 +1,5 @@
 package com.marzane.notes_app.Utils;
 
-import android.provider.ContactsContract;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.models.NoteModel;

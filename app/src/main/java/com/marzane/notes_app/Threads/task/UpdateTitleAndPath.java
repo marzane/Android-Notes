@@ -1,7 +1,6 @@
 package com.marzane.notes_app.Threads.task;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.marzane.notes_app.models.NoteModel;
 import com.marzane.notes_app.repository.RecentNotesRepository;

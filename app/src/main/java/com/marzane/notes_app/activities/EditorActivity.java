@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,17 +28,18 @@ import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.marzane.notes_app.ActionValues;
-import com.marzane.notes_app.SettingsService;
-import com.marzane.notes_app.Utils.MyClipboardManager;
-import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
-import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.R;
+import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
-import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.Utils.TextTools;
 import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
+import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.models.NoteModel;
+import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.Utils.MyClipboardManager;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -64,9 +66,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private EditText etEditor;
     private MenuItem saveButton;
     private ActionMenuView bottomBar;
+    private LinearLayout contentToolbar;
 
     private static HandlePathOz handlePathOz;
     private static TaskRunner taskRunner = new TaskRunner();
+    private TextTools textTools;
     
     private static final String LOCALE_STATE = "LOCALE";
     private static final String NOTE_STATE = "NOTE";
@@ -93,6 +97,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         resources = getResources();
         handlePathOz = new HandlePathOz(this, this);
         settingsService = new SettingsService();
+        contentToolbar = findViewById(R.id.content_toolbar);
         updateSettingsValues();
 
         // initialize toolbar
@@ -104,7 +109,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
         etEditor.requestFocus();
         etEditor.setTextSize(fontSize);
-
+        textTools = new TextTools(this, etEditor);
 
         if (savedInstanceState != null) {
             locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
@@ -390,39 +395,25 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
             // text tools (bottom toolbar)
         } else if (id == R.id.button_cut) {  // cut
-             int start = Math.max(etEditor.getSelectionStart(), 0);
-             int end = Math.max(etEditor.getSelectionEnd(), 0);
-             if(start != end){
-                 text = etEditor.getText().toString();
-                 Boolean r = myClipboardManager.copyToClipboard(this, text.substring(start, end));
-                 etEditor.getText().replace(Math.min(start, end), Math.max(start, end), "", 0, 0);
-             }
-
+            textTools.cut();
             return true;
 
         } else if(id == R.id.button_copy) {  // copy
-            int start = etEditor.getSelectionStart();
-            int end = etEditor.getSelectionEnd();
-
-            if( start != end){
-                text = etEditor.getText().toString();
-
-                Boolean r = myClipboardManager.copyToClipboard(this, text.substring(start, end));
-                if (r) Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
-            }
+            if(textTools.copy())
+                Toast.makeText(this, resources.getText(R.string.copy_to_clipboard), Toast.LENGTH_SHORT).show();
 
             return true;
 
         } else if(id == R.id.button_paste) {  // paste
-            String paste = myClipboardManager.readFromClipboard(this);
-            if (!paste.isEmpty()){
-                int start = Math.max(etEditor.getSelectionStart(), 0);
-                int end = Math.max(etEditor.getSelectionEnd(), 0);
+            textTools.paste();
+            return true;
 
-                etEditor.getText().replace(Math.min(start, end), Math.max(start, end), paste, 0, paste.length());
+        } else if(id == R.id.button_select_all) {  // paste
+            textTools.selectAll();
+            return true;
 
-            }
-
+        } else if(id == R.id.button_select) {  // paste
+            textTools.select();
             return true;
 
         } else {
@@ -501,11 +492,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     private void updateToolbarVisibility(boolean enabled){
-        if(bottomBar != null){
+        if(contentToolbar != null){
             if(enabled){
-                bottomBar.setVisibility(View.VISIBLE);
+                contentToolbar.setVisibility(View.VISIBLE);
             } else {
-                bottomBar.setVisibility(View.INVISIBLE);
+                contentToolbar.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -535,6 +526,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
         }
         return super.onKeyDown(keyCode, event);
+
+
     }
 
 }

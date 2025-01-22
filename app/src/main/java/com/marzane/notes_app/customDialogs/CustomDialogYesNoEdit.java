@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -18,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
-import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
-import com.marzane.notes_app.Threads.task.UpdateTitleAndPath;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
-import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.models.NoteModel;
 

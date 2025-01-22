@@ -19,6 +19,18 @@
         android:title="paste"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/button_select"
+        android:icon="@drawable/select"
+        android:title="select"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/button_select_all"
+        android:icon="@drawable/select_all"
+        android:title="select all"
+        app:showAsAction="always"/>
+
     <!--
     <item
         android:id="@+id/button_undo"

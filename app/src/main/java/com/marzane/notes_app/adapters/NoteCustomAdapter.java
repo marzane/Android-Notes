@@ -14,10 +14,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.R;
-import com.marzane.notes_app.Utils.DateUtil;
+
 import com.marzane.notes_app.activities.EditorActivity;
 import com.marzane.notes_app.customDialogs.CustomDialogFileOptions;
 import com.marzane.notes_app.models.NoteModel;
+import com.marzane.notes_app.Utils.DateUtil;
 
 import java.util.ArrayList;
 

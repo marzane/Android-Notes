@@ -16,7 +16,6 @@ import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * A generic undo/redo implementation for TextViews.

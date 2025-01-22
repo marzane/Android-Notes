@@ -34,13 +34,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
-import com.marzane.notes_app.Threads.task.ListAllNotesTask;
-import com.marzane.notes_app.Threads.TaskRunner;
-import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
-import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
+import com.marzane.notes_app.Threads.TaskRunner;
+import com.marzane.notes_app.Threads.task.ListAllNotesTask;
+import com.marzane.notes_app.Utils.FileUtil;
+import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 
 import java.util.Locale;
 

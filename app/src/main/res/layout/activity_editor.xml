@@ -29,10 +29,15 @@
             />
     </ScrollView>
 
-    <androidx.appcompat.widget.ActionMenuView
-        android:id="@+id/bottom_tools"
-        style="@style/toolsEditor"
-        android:windowActionBarOverlay="true"
-        android:elevation="4dp" />
+    <LinearLayout
+        android:id="@+id/content_toolbar"
+        style="@style/content_toolbar">
+        <androidx.appcompat.widget.ActionMenuView
+            android:id="@+id/bottom_tools"
+            style="@style/toolsEditor"
+            android:windowActionBarOverlay="true"
+            android:elevation="4dp" />
+    </LinearLayout>
+
 
 </LinearLayout>
