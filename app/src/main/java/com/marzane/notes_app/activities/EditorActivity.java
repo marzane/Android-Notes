@@ -35,6 +35,7 @@ import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
 import com.marzane.notes_app.Utils.TextTools;
 import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
+import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.models.NoteModel;
 import com.marzane.notes_app.Utils.FileUtil;
@@ -61,6 +62,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private boolean isAutosaveEnabled;
     private boolean isToolbarEnabled;
+    private boolean saveOnDatabase = true;
+    private boolean enableSaveFile = true;
 
     // layout elements
     private EditText etEditor;
@@ -135,19 +138,34 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         }
 
         intent = getIntent();
-        Bundle b = intent.getExtras();  // en el caso de querer abrir un archivo que ya existe
-                                        // deberia recibir la uri
-        if(b!=null)
-        {
-            Uri uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
+        String action = intent.getAction();
+        Bundle b = intent.getExtras();
+        Uri uriFile = null;
+
+        if(b != null){
+            uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
+            if(uriFile != null){
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                saveOnDatabase = true;
+            }
+
+        } else if(Intent.ACTION_VIEW.equals(action)){  // "open with"
+            if(intent.getData() != null){
+                uriFile = intent.getData();
+                intent.setData(null);
+                saveOnDatabase = false;
+                enableSaveFile = false;
+            }
+               // when file is open this way, cannot be edited
+        }
+
 
             if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                note.setPath(uriFile.toString());
                 text = FileUtil.readFile(uriFile, this);
+                note.setPath(uriFile.toString());
 
                 if(text == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
 
@@ -155,20 +173,22 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         RecyclerViewNotesManager.deleteItem(note);
                     });
 
+                    CustomDialogInformation cdd = new CustomDialogInformation(this,  resources.getString(R.string.dialog_error_read_file), ActionValues.CLOSE_ACTIVITY.getID());
+                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    cdd.show();
+                    //Toast.makeText(this, resources.getString(R.string.dialog_error_read_file), Toast.LENGTH_SHORT).show();
+
                 } else {
                     etEditor.setText(text);
                     handlePathOz.getRealPath(uriFile);
 
-                    //show keyboard
-                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    showKeyboard();
                     
                     intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
                 }
 
             }
 
-        }
 
     }
 
@@ -223,7 +243,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (requestCode == ActionValues.SAVE_FILE_AS.getID()) {  // si lo que se ha hecho es crear un archivo
-
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     if (intent != null && intent.getData() != null) {
@@ -236,6 +255,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
                         note = new NoteModel();
                         note.setPath(uri.toString());
+                        saveOnDatabase = true;
                         handlePathOz.getRealPath(uri);
 
                         if(FileUtil.writeFile(uri, text, this)){
@@ -281,12 +301,17 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         if(!rutaRealArchivo.isEmpty()) {
             Toast.makeText(this, resources.getString(R.string.opening_file) + " " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
-            note.setlastOpened(LocalDateTime.now());
-            taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {
-                if(dataResult > 0){
-                    updateNoteOnList();
-                }
-            });
+
+            // save this note in recent notes history?
+            if(saveOnDatabase){
+                note.setlastOpened(LocalDateTime.now());
+                taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {
+                    if(dataResult > 0){
+                        updateNoteOnList();
+                    }
+                });
+            }
+
         }
 
         //Handle Exception (Optional)
@@ -314,7 +339,18 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         updateToolbarVisibility(isToolbarEnabled);
 
+        if(!enableSaveFile) {
+            disableSaveOption();
+            etEditor.removeTextChangedListener(textWatcher);
+        }
+
         return true;
+    }
+
+
+    private void disableSaveOption(){
+        saveButton.setIcon(R.drawable.file_save_disabled);
+        saveButton.setEnabled(false);
     }
 
 
@@ -330,6 +366,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if (id == R.id.save_file){   // overwrite existing file or create it
             if(saveFile())
                 Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
+
             return true;
 
         } else if (id == R.id.close_app){  // close app
@@ -457,10 +494,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private void updateUnsavedChangesState(){
         if(unsavedChanged){ // si hay cambios sin guardar
             getSupportActionBar().setTitle(note.getTitle() + "*");
-            if(saveButton != null) saveButton.setIcon(R.drawable.file_unsaved);
+            if(saveButton != null) {
+                saveButton.setIcon(R.drawable.file_unsaved);
+                saveButton.setEnabled(true);
+            }
         } else {
             getSupportActionBar().setTitle(note.getTitle());
-            if(saveButton != null) saveButton.setIcon(R.drawable.file_save);
+            if(saveButton != null) {
+                saveButton.setIcon(R.drawable.file_save);
+                saveButton.setEnabled(false);
+            }
         }
 
     }
@@ -476,6 +519,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private boolean saveFile(){
         boolean result = false;
+
         if (note.getPath() != null) {
             text = etEditor.getText().toString();
             result = FileUtil.overwriteFile(note.getRealPath(), text, this);
@@ -500,6 +544,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             }
         }
 
+    }
+
+
+    private void showKeyboard(){
+        //show keyboard
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
 

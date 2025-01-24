@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -54,9 +55,6 @@ public class FileUtil {
         }
         catch (Exception ex)
         {
-            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.CLOSE_ACTIVITY.getID());
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
             return null;
         }
 
@@ -130,8 +128,6 @@ public class FileUtil {
         Boolean result = false;
 
         try{
-            //String currentFileName = realPath.substring(realPath.lastIndexOf("/") + 1); // original file name
-
             File directory = new File(realPath.substring(0, realPath.lastIndexOf("/")));   // directory
 
             // if directory exists

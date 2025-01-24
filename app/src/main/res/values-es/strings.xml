@@ -34,8 +34,10 @@
     <string name="permission_storage_granted">Permisos de almacenamiento concedidos</string>
     <string name="permission_storage_denied">Permisos de almacenamiento denegados: Esta aplicación necesita acceder al almacenamiento del dispositivo para leer y escribir archivos.</string>
     <string name="fontSize_title">Tamaño de letra</string>
+    <string name="file_not_saved">no se pudo guardar el archivo</string>
     <string name="opening_file">abriendo archivo</string>
     <string name="show_toolbar_title">Mostrar barra de herramientas</string>
     <string name="autosave_description">Guarda automáticamente cada cambio realizado en el texto</string>
     <string name="show_toolbar_description">Mostrar herramientas de edición de texto en la parte inferior de la pantalla</string>
+    <string name="dialog_error_read_file">No se pudo leer el archivo</string>
 </resources>
