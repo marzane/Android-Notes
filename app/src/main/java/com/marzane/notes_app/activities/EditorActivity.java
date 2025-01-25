@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -64,6 +65,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private boolean isToolbarEnabled;
     private boolean saveOnDatabase = true;
     private boolean enableSaveFile = true;
+    private boolean unsavedChanged = false;
 
     // layout elements
     private EditText etEditor;
@@ -81,7 +83,12 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
     private static final String SAVE_ENABLED = "SAVEENABLED";
 
-    private boolean unsavedChanged = false;
+
+    private String[] mimeTypes = { "text/*",
+                                    "application/jsonlines",
+                                    "application/javascript",
+                                    "application/textedit"};
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -542,11 +549,15 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private void updateToolbarVisibility(boolean enabled){
         if(contentToolbar != null){
+            ViewGroup.LayoutParams params = contentToolbar.getLayoutParams();;
             if(enabled){
                 contentToolbar.setVisibility(View.VISIBLE);
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             } else {
                 contentToolbar.setVisibility(View.INVISIBLE);
+                params.height = 0;
             }
+            contentToolbar.setLayoutParams(params);
         }
 
     }

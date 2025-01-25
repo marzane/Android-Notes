@@ -6,12 +6,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.marzane.notes_app.ActionValues;
-import com.marzane.notes_app.R;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 
 import java.io.BufferedReader;
@@ -27,6 +25,10 @@ public class FileUtil {
 
     private static Resources resources;
     private static CustomDialogInformation cdd;
+    private static String[] mimeTypes = { "text/*",
+            "application/jsonlines",
+            "application/javascript",
+            "application/textedit"};
 
     private FileUtil(){}
 
@@ -153,7 +155,9 @@ public class FileUtil {
     public static void openFileIntent(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT); // cargar el selector de archivos
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType(activity.getResources().getString(R.string.mime_type));
+        intent.setType("text/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"text/*", "application/javascript"});
+
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
