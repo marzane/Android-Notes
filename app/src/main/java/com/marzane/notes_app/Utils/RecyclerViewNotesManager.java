@@ -16,53 +16,67 @@ public class RecyclerViewNotesManager {
 
 
     public static void deleteItem(NoteModel noteModel){
-        int position = arrayRecentNotes.indexOf(noteModel);
-        if (position > -1){
-            arrayRecentNotes.remove(position);
-            rvNoteList.getAdapter().notifyItemRemoved(position);
+        if(rvNoteList != null){
+            int position = arrayRecentNotes.indexOf(noteModel);
+            if (position > -1){
+                arrayRecentNotes.remove(position);
+                rvNoteList.getAdapter().notifyItemRemoved(position);
+            }
         }
+
     }
 
 
     public static void deleteAllItems(){
-        int size = arrayRecentNotes.size();
-        arrayRecentNotes.clear();
-        rvNoteList.getAdapter().notifyItemRangeRemoved(0, size);
+        if(rvNoteList != null){
+            int size = arrayRecentNotes.size();
+            arrayRecentNotes.clear();
+            rvNoteList.getAdapter().notifyItemRangeRemoved(0, size);
+        }
+
     }
 
 
     public static void insertOrUpdateItem(NoteModel noteModel){
-        int position = arrayRecentNotes.indexOf(noteModel);
-        if (position > -1){ // update
-            arrayRecentNotes.set(position, noteModel);
-            rvNoteList.getAdapter().notifyItemChanged(position);
+        if(rvNoteList != null) {
+            int position = arrayRecentNotes.indexOf(noteModel);
+            if (position > -1) { // update
+                arrayRecentNotes.set(position, noteModel);
+                rvNoteList.getAdapter().notifyItemChanged(position);
 
-        } else { // insert
-            arrayRecentNotes.add(noteModel);
-            rvNoteList.getAdapter().notifyItemInserted(arrayRecentNotes.size());
+            } else { // insert
+                arrayRecentNotes.add(noteModel);
+                rvNoteList.getAdapter().notifyItemInserted(arrayRecentNotes.size());
+            }
         }
     }
 
 
     public static void moveItem(int to, NoteModel noteModel){
-        int from = arrayRecentNotes.indexOf(noteModel);
+        if(rvNoteList != null){
+            int from = arrayRecentNotes.indexOf(noteModel);
 
-        if(from > -1){
-            arrayRecentNotes.remove(from);
-            arrayRecentNotes.add(to, noteModel);
+            if(from > -1){
+                arrayRecentNotes.remove(from);
+                arrayRecentNotes.add(to, noteModel);
 
-            rvNoteList.getAdapter().notifyItemMoved(from, to);
+                rvNoteList.getAdapter().notifyItemMoved(from, to);
+            }
         }
+
     }
 
 
     public static void replaceItem(NoteModel oldNote, NoteModel newNote){
-        int position = arrayRecentNotes.indexOf(oldNote);
-        if (position > -1){
-            arrayRecentNotes.set(position, newNote);
-            rvNoteList.getAdapter().notifyItemChanged(position);
+        if(rvNoteList != null){
+            int position = arrayRecentNotes.indexOf(oldNote);
+            if (position > -1){
+                arrayRecentNotes.set(position, newNote);
+                rvNoteList.getAdapter().notifyItemChanged(position);
 
+            }
         }
+
     }
 
 

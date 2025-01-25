@@ -79,6 +79,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final String NOTE_STATE = "NOTE";
     private static final String TEXT_STATE = "TEXT";
     private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
+    private static final String SAVE_ENABLED = "SAVEENABLED";
 
     private boolean unsavedChanged = false;
 
@@ -88,6 +89,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         savedInstanceState.putSerializable(NOTE_STATE, note);
         savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
         savedInstanceState.putBoolean(UNSAVED_STATE, unsavedChanged);
+        savedInstanceState.putBoolean(SAVE_ENABLED, enableSaveFile);
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -119,6 +121,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
             text = savedInstanceState.getString(TEXT_STATE);
             unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
+            enableSaveFile = savedInstanceState.getBoolean(SAVE_ENABLED);
 
         } else {
             locale = new Locale(settingsService.getLanguage(this));
@@ -189,7 +192,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
             }
 
-
     }
 
 
@@ -256,6 +258,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         note = new NoteModel();
                         note.setPath(uri.toString());
                         saveOnDatabase = true;
+                        enableSaveFile = true;
                         handlePathOz.getRealPath(uri);
 
                         if(FileUtil.writeFile(uri, text, this)){
@@ -492,17 +495,19 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     private void updateUnsavedChangesState(){
-        if(unsavedChanged){ // si hay cambios sin guardar
-            getSupportActionBar().setTitle(note.getTitle() + "*");
-            if(saveButton != null) {
-                saveButton.setIcon(R.drawable.file_unsaved);
-                saveButton.setEnabled(true);
-            }
-        } else {
-            getSupportActionBar().setTitle(note.getTitle());
-            if(saveButton != null) {
-                saveButton.setIcon(R.drawable.file_save);
-                saveButton.setEnabled(false);
+        if(getSupportActionBar() != null){
+            if(unsavedChanged){ // si hay cambios sin guardar
+                getSupportActionBar().setTitle(note.getTitle() + "*");
+                if(saveButton != null) {
+                    saveButton.setIcon(R.drawable.file_unsaved);
+                    saveButton.setEnabled(true);
+                }
+            } else {
+                getSupportActionBar().setTitle(note.getTitle());
+                if(saveButton != null) {
+                    saveButton.setIcon(R.drawable.file_save);
+                    saveButton.setEnabled(false);
+                }
             }
         }
 

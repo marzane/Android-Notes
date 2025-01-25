@@ -15,11 +15,9 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-<!-- https://www.develou.com/scrollview-en-android/ -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="80">
+        android:layout_height="match_parent">
 
         <EditText
             style="@style/input_editor"
