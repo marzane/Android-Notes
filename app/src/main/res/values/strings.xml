@@ -2,6 +2,7 @@
     <string name="app_name" translatable="false">Notepad</string>
     <string name="extra_intent_uri_file" translatable="false">uriFile</string>
     <string name="mime_type" translatable="false">text/*</string>
+    <string name="url_web_app" translatable="false">https://marzanedev.blogspot.com/p/notepad.html</string>
 
     <!-- default new file name -->
     <string name="default_title">newFile.txt</string>
@@ -80,4 +81,6 @@
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>
     <string name="permission_storage_denied">Storage Permissions Denied: This app needs to access device storage to read and write files</string>
+
+
 </resources>

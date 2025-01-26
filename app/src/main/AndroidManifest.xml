@@ -21,7 +21,7 @@
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Ej_ficheros_texto"
+        android:theme="@style/Theme.Notepad"
         tools:targetApi="34">
 
         <activity
