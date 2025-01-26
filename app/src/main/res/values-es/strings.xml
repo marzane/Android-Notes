@@ -37,7 +37,10 @@
     <string name="file_not_saved">no se pudo guardar el archivo</string>
     <string name="opening_file">abriendo archivo</string>
     <string name="show_toolbar_title">Mostrar barra de herramientas</string>
+    <string name="version_title">Versión</string>
     <string name="autosave_description">Guarda automáticamente cada cambio realizado en el texto</string>
     <string name="show_toolbar_description">Mostrar herramientas de edición de texto en la parte inferior de la pantalla</string>
     <string name="dialog_error_read_file">No se pudo leer el archivo</string>
+    <string name="about_title">Acerca de</string>
+    <string name="about_description">descripción de la aplicación</string>
 </resources>

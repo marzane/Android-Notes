@@ -6,15 +6,19 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
 
+import br.com.onimur.handlepathoz.BuildConfig;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private static SettingsService settingsService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
@@ -66,7 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             }
 
-
+            Preference version = findPreference(getResources().getString(R.string.app_version_setting));
+            if(version != null){
+                version.setSummary(BuildConfig.VERSION_NAME);
+            }
 
         }
 

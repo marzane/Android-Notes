@@ -57,15 +57,14 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private int fontSize;
     private NoteModel note;
     private Resources resources;
-    private MyClipboardManager myClipboardManager = new MyClipboardManager();
     private SettingsService settingsService;
     private Locale locale;
 
     private boolean isAutosaveEnabled;
     private boolean isToolbarEnabled;
-    private boolean saveOnDatabase = true;
-    private boolean enableSaveFile = true;
-    private boolean unsavedChanged = false;
+    private boolean saveOnDatabase = true;   // file can be saved on database? (recent notes history)
+    private boolean enableSaveFile = true;   // save action can be performed?
+    private boolean unsavedChanged = false;  // are there unsaved changes?
 
     // layout elements
     private EditText etEditor;
@@ -82,12 +81,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final String TEXT_STATE = "TEXT";
     private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
     private static final String SAVE_ENABLED = "SAVEENABLED";
-
-
-    private String[] mimeTypes = { "text/*",
-                                    "application/jsonlines",
-                                    "application/javascript",
-                                    "application/textedit"};
 
 
     @Override
@@ -118,11 +111,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
-        etEditor = findViewById(R.id.et_editor);  // editText donde se escribe el contenido del archivo
+        // initialize main editText
+        etEditor = findViewById(R.id.et_editor);
         etEditor.requestFocus();
         etEditor.setTextSize(fontSize);
         textTools = new TextTools(this, etEditor);
 
+        // actualize state
         if (savedInstanceState != null) {
             locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
             note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
@@ -147,20 +142,14 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             getSupportActionBar().setTitle(note.getTitle());
         }
 
+
+        // this part is in case we are expecting an intent containing the uri file via "open file" or "open with"
         intent = getIntent();
         String action = intent.getAction();
         Bundle b = intent.getExtras();
         Uri uriFile = null;
 
-        if(b != null){
-            uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
-            if(uriFile != null){
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                saveOnDatabase = true;
-            }
-
-        } else if(Intent.ACTION_VIEW.equals(action)){  // "open with"
+        if(Intent.ACTION_VIEW.equals(action)){  // "open with"
             if(intent.getData() != null){
                 uriFile = intent.getData();
                 intent.setData(null);
@@ -168,10 +157,18 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 enableSaveFile = false;
             }
                // when file is open this way, cannot be edited
+        } else if(b != null){  // "open file"
+            uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
+            if(uriFile != null){
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                saveOnDatabase = true;
+            }
+
         }
 
 
-            if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
+        if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
 
                 text = FileUtil.readFile(uriFile, this);

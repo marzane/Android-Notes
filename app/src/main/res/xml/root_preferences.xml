@@ -13,7 +13,7 @@
 
     </PreferenceCategory>
 
-        <PreferenceCategory app:title="@string/editor_header">
+    <PreferenceCategory app:title="@string/editor_header">
 
             <SeekBarPreference
                 app:title="@string/fontSize_title"
@@ -40,5 +40,17 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/about_title">
+        <Preference
+            android:key="@string/app_version_setting"
+            android:title="@string/version_title"
+            android:summary=""/>
+
+        <Preference
+            android:key="@string/about_setting"
+            android:title="@string/about_title"
+            android:summary="@string/about_description"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

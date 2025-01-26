@@ -55,22 +55,27 @@
     <!-- Preference Titles -->
     <string name="general_header">General</string>
     <string name="editor_header">Editor</string>
+    <string name="about_title">About</string>
 
     <!-- Messages Preferences -->
     <string name="language_title">Language</string>
     <string name="fontSize_title">Font size</string>
     <string name="autosave_title">Autosave</string>
     <string name="show_toolbar_title">Show toolbar</string>
+    <string name="version_title">Version</string>
 
     <!-- setting descriptions -->
     <string name="autosave_description">Automatically saves every change made to the text</string>
     <string name="show_toolbar_description">Show text editing tools at the bottom of the screen</string>
+    <string name="about_description">App description</string>
 
     <!-- setting properties -->
     <string name="language_setting" translatable="false">language</string>
     <string name="font_size_setting" translatable="false">fontSize</string>
     <string name="autosave_setting" translatable="false">autosave</string>
     <string name="show_toolbar_setting" translatable="false">showtoolbar</string>
+    <string name="app_version_setting" translatable="false">appVersion</string>
+    <string name="about_setting" translatable="false">about</string>
 
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>
