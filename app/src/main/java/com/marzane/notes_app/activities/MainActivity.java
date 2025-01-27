@@ -19,6 +19,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity{
     private CustomDialogYesNo cd;
     private SettingsService settingsService;
     private Locale locale;
+    private TextView tvEmptyList;
 
 
     @Override
@@ -71,6 +75,7 @@ public class MainActivity extends AppCompatActivity{
 
         resources = getResources();
         settingsService = new SettingsService();
+        tvEmptyList = findViewById(R.id.tvEmptyList);
 
 
         if (savedInstanceState != null) {
@@ -101,6 +106,8 @@ public class MainActivity extends AppCompatActivity{
 
             RecyclerViewNotesManager.setDataList(data);
             RecyclerViewNotesManager.setRecyclerView(rvNoteList);
+
+            RecyclerViewNotesManager.updateRecyclerViewVisibility();
         });
 
     }

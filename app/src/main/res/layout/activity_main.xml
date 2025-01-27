@@ -21,4 +21,11 @@
             android:layout_marginTop="15dp"
             android:id="@+id/rv_recent_notes"/>
 
+    <TextView
+        android:id="@+id/tvEmptyList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="empty"
+        android:textColor="@color/darkBrown"/>
+
 </LinearLayout>

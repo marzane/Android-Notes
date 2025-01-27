@@ -315,6 +315,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 taskRunner.executeAsync(new InsertOrUpdateFile(this, note), (dataResult) -> {
                     if(dataResult > 0){
                         updateNoteOnList();
+                        RecyclerViewNotesManager.updateRecyclerViewVisibility();
                     }
                 });
             }

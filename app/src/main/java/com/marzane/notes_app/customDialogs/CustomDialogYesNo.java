@@ -74,7 +74,10 @@ public class CustomDialogYesNo extends Dialog implements android.view.View.OnCli
 
             } else if(action == ActionValues.CLEAR_LIST.getID()){
                 taskRunner.executeAsync(new DeleteAllNotesTask(activity), (data) -> {
-                    if(data > 0) RecyclerViewNotesManager.deleteAllItems();
+                    if(data > 0) {
+                        RecyclerViewNotesManager.deleteAllItems();
+                        RecyclerViewNotesManager.updateRecyclerViewVisibility();
+                    }
 
                 });
 
