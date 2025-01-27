@@ -3,6 +3,7 @@ package com.marzane.notes_app.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
@@ -18,11 +19,21 @@ import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 
+import java.util.Locale;
+
 import br.com.onimur.handlepathoz.BuildConfig;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private static SettingsService settingsService;
+    private Locale locale;
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable("LOCALE", locale);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
 
     @Override
@@ -31,11 +42,15 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.settings_activity);
         settingsService = new SettingsService();
         if (savedInstanceState == null) {
+            locale = new Locale(settingsService.getLanguage(this));
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
+        } else {
+            locale = (Locale) savedInstanceState.getSerializable("LOCALE");
         }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -85,9 +100,8 @@ public class SettingsActivity extends AppCompatActivity {
             if(about != null){
                 about.setOnPreferenceClickListener((preference) -> {
 
-                    CustomDialogInformation cdd = new CustomDialogInformation(getActivity(), getResources().getString(R.string.url_web_app), ActionValues.NOACTION.getID());
-                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    cdd.show();
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.url_web_app)));
+                    startActivity(browserIntent);
 
                     return true;
                 });
