@@ -19,7 +19,7 @@
                 app:title="@string/fontSize_title"
                 app:key="@string/font_size_setting"
                 app:defaultValue="17"
-                android:max="40"
+                android:max="50"
                 app:min="10"
                 app:showSeekBarValue="true"
                 />

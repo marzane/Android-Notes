@@ -18,6 +18,7 @@ import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
+import com.marzane.notes_app.Utils.FileUtil;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 import com.marzane.notes_app.models.NoteModel;
 
@@ -86,71 +87,37 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
 
         int id = v.getId();
 
+        boolean deleted = false;
+
         if(id == R.id.button_accept){
             // do an action
-            if(action == ActionValues.REMOVE_FROM_LIST.getID() || action == ActionValues.DELETE_FILE.getID()){
-                taskRunner.executeAsync(new deleteByPathTask(activity, note.getPath().toString()), countResult -> {
-                    // update data
-                    RecyclerViewNotesManager.deleteItem(note);
+            if(action == ActionValues.DELETE_FILE.getID()){
+                deleted = FileUtil.deleteFile(note.getRealPath());
 
-                    // save edited recyclerView and dataset
-                    RecyclerViewNotesManager.setDataList(arrayListNotes);
-                    RecyclerViewNotesManager.setRecyclerView(rvNotesMain);
+                if(!deleted){
+                    Toast.makeText(activity, R.string.deleted_file_error, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(activity, R.string.deleted_file_ok, Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+            if(action == ActionValues.REMOVE_FROM_LIST.getID() || (action == ActionValues.DELETE_FILE.getID() && deleted)){
+                taskRunner.executeAsync(new deleteByPathTask(activity, note.getPath()), countResult -> {
+                    if(countResult > 0){
+                        // update data
+                        RecyclerViewNotesManager.deleteItem(note);
+
+                        // save edited recyclerView and dataset
+                        RecyclerViewNotesManager.setDataList(arrayListNotes);
+                        RecyclerViewNotesManager.setRecyclerView(rvNotesMain);
+
+                        RecyclerViewNotesManager.updateRecyclerViewVisibility();
+                    }
+
                 });
             }
-
-            if(action == ActionValues.DELETE_FILE.getID()){
-                try{
-                    File file = new File(note.getRealPath());
-                    if(file.exists()) {
-                        file.delete();
-                        Toast.makeText(activity, R.string.deleted_file_ok, Toast.LENGTH_SHORT).show();
-
-                    }
-                } catch (Exception e){
-                    CustomDialogInformation cdd = new CustomDialogInformation(activity, e.getMessage(), ActionValues.NOACTION.getID());
-                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    cdd.show();
-                }
-
-            }
-
-            /*
-            if(action == ActionValues.RENAME_FILE.getID()){
-                String newName = etPath.getText().toString();
-
-                if(!newName.isEmpty() || !newName.equals(note.getTitle())){
-
-                    try{
-                        NoteModel editedNote = (NoteModel) note.clone();
-                        editedNote.updateTitleAndRealPath(activity, newName);
-
-                        File editedFile = new File(editedNote.getRealPath());
-
-                        if(!editedFile.exists()){
-                            // no existe; se puede usar el nombre nuevo
-                            if(FileUtil.renameFile(activity, note.getRealPath(), newName)){
-
-                                taskRunner.executeAsync(new UpdateTitleAndPath(activity, note, editedNote), result -> {
-                                    if(result > 0){
-                                        RecyclerViewNotesManager.replaceItem(note, editedNote);
-                                        Toast.makeText(activity, activity.getResources().getString(R.string.file_renamed), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        } else {
-                            // existe; se cancela renombrar
-                            Toast.makeText(activity, "ya existe un archivo con ese nombre", Toast.LENGTH_LONG).show();
-
-                        }
-                    } catch (Exception ex){
-                        Toast.makeText(activity, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            }
-            */
-
 
         } else if(id == R.id.button_cancel){
             dismiss();

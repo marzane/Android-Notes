@@ -84,17 +84,15 @@ public class RecyclerViewNotesManager {
 
 
     public static void updateRecyclerViewVisibility(){
+        ViewGroup.LayoutParams params = rvNoteList.getLayoutParams();
         if(RecyclerViewNotesManager.getDataList().isEmpty()){
             rvNoteList.setVisibility(View.INVISIBLE);
-            ViewGroup.LayoutParams params = rvNoteList.getLayoutParams();
             params.height = 0;
-            rvNoteList.setLayoutParams(params);
         } else {
             rvNoteList.setVisibility(View.VISIBLE);
-            ViewGroup.LayoutParams params = rvNoteList.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            rvNoteList.setLayoutParams(params);
         }
+        rvNoteList.setLayoutParams(params);
     }
 
 

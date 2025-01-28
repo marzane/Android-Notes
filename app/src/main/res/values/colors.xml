@@ -9,6 +9,7 @@
     <color name="brown">#4B250E</color>
     <color name="darkBrown">#331809</color>
     <color name="yellow">#ECE88A</color>
+    <color name="yellow_shadow">#b8b469</color>
     <color name="lightOrange">#F2BF62</color>
     <color name="grey">#C2BBBF</color>
 </resources>

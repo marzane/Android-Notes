@@ -13,14 +13,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,22 +68,22 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         if(!checkStoragePermissions()) requestForStoragePermissions();
 
-        resources = getResources();
         settingsService = new SettingsService();
-        tvEmptyList = findViewById(R.id.tvEmptyList);
-
 
         if (savedInstanceState != null) {
             locale = (Locale) savedInstanceState.getSerializable("LOCALE");
         } else {
             locale = new Locale(settingsService.getLanguage(this));
         }
-
         settingsService.setLocale(locale.getLanguage(), this);
+
+        setContentView(R.layout.activity_main);
+
+        resources = getResources();
+        tvEmptyList = findViewById(R.id.tvEmptyList);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -112,6 +111,11 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onPostCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onPostCreate(savedInstanceState, persistentState);
+        tvEmptyList.setText(R.string.list_empty);
+    }
 
     @Override
     protected void onResume() {

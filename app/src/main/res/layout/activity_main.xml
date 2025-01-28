@@ -17,15 +17,27 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:background="@drawable/editor_background"
             android:id="@+id/rv_recent_notes"/>
 
-    <TextView
-        android:id="@+id/tvEmptyList"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="empty"
-        android:textColor="@color/darkBrown"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@drawable/editor_background">
+        <TextView
+            android:id="@+id/tvEmptyList"
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:text="@string/list_empty"
+            android:textAlignment="center"
+            android:textColor="@color/lightBrown"/>
+    </LinearLayout>
+
 
 </LinearLayout>

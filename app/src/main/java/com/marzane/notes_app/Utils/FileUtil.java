@@ -149,6 +149,17 @@ public class FileUtil {
     }
 
 
+    public static boolean deleteFile(String realUri){
+        boolean result = false;
+        File file = new File(realUri);
+        if(file.exists()) {
+            result = file.delete();
+        }
+
+        return result;
+    }
+
+
     /**
      * @param activity
      */

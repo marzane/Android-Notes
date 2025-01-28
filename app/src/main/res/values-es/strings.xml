@@ -43,4 +43,6 @@
     <string name="dialog_error_read_file">No se pudo leer el archivo</string>
     <string name="about_title">Acerca de</string>
     <string name="about_description">descripción de la aplicación</string>
+    <string name="deleted_file_error">No se pudo eliminar el archivo</string>
+    <string name="list_empty">"Pulsa + para crear un archivo nuevo, o abre un archivo existente "</string>
 </resources>

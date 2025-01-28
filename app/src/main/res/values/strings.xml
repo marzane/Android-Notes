@@ -11,6 +11,9 @@
     <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format" translatable="false">HH:mm</string>
 
+    <!-- main message when recent notes history is empty -->
+    <string name="list_empty">Press + to create a new file, or open an existing file</string>
+
     <!-- action bar options -->
     <string name="menu_clear_list">clear list</string>
     <string name="menu_close_app">close app</string>
@@ -43,6 +46,7 @@
 
     <!-- toast messages -->
     <string name="deleted_file_ok">file deleted successfully</string>
+    <string name="deleted_file_error">file could not be deleted</string>
     <string name="copy_to_clipboard">copied to clipboard</string>
     <string name="title_activity_settings" translatable="false">SettingsActivity</string>
     <string name="file_saved">file saved</string>
