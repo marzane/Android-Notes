@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.ActionValues;
+import com.marzane.notes_app.GridAutofitLayoutManager;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity{
         taskRunner.executeAsync(new ListAllNotesTask(this), (data) -> {
 
             NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(data,MainActivity.this);
-            rvNoteList.setLayoutManager(new GridLayoutManager(this, screen_width/350));
+            rvNoteList.setLayoutManager(new GridAutofitLayoutManager(this, 320));
             rvNoteList.setAdapter(noteCustomAdapter);
 
             RecyclerViewNotesManager.setDataList(data);
@@ -111,11 +112,6 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    @Override
-    public void onPostCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onPostCreate(savedInstanceState, persistentState);
-        tvEmptyList.setText(R.string.list_empty);
-    }
 
     @Override
     protected void onResume() {
