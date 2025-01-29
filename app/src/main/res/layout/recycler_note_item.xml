@@ -28,9 +28,7 @@
             android:rotation="-6">
             <TextView
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/layoutDate"
                 app:layout_constrainedWidth="true"
                 app:layout_constrainedHeight="true"
                 android:id="@+id/rv_note_title"
@@ -38,19 +36,20 @@
                 android:textColor="@color/darkBrown"
                 android:textSize="15sp"
                 android:layout_height="match_parent"
-                android:layout_width="match_parent" />
+                android:layout_width="match_parent"
+                app:layout_constraintHeight_percent=".77"/>
 
             <LinearLayout
                 android:id="@+id/layoutDate"
+                android:background="@drawable/shape_grey_border_top"
                 app:layout_constrainedWidth="true"
                 app:layout_constrainedHeight="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <TextView
                     style="@style/rv_note_value"
                     android:id="@+id/rv_note_date"
