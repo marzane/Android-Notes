@@ -3,15 +3,15 @@ package com.marzane.notes_app.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
@@ -34,13 +35,10 @@ import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.InsertOrUpdateFile;
 import com.marzane.notes_app.Threads.task.deleteByPathTask;
+import com.marzane.notes_app.Utils.CreateDialog;
 import com.marzane.notes_app.Utils.TextTools;
-import com.marzane.notes_app.customDialogs.CustomDialogFileInfo;
-import com.marzane.notes_app.customDialogs.CustomDialogInformation;
-import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.models.NoteModel;
 import com.marzane.notes_app.Utils.FileUtil;
-import com.marzane.notes_app.Utils.MyClipboardManager;
 import com.marzane.notes_app.Utils.RecyclerViewNotesManager;
 
 import java.time.LocalDateTime;
@@ -59,6 +57,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private Resources resources;
     private SettingsService settingsService;
     private Locale locale;
+    private CreateDialog createDialog;
 
     private boolean isAutosaveEnabled;
     private boolean isToolbarEnabled;
@@ -102,6 +101,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         resources = getResources();
         handlePathOz = new HandlePathOz(this, this);
         settingsService = new SettingsService();
+        createDialog = new CreateDialog(this);
         contentToolbar = findViewById(R.id.content_toolbar);
         updateSettingsValues();
 
@@ -170,7 +170,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
-
                 text = FileUtil.readFile(uriFile, this);
                 note.setPath(uriFile.toString());
 
@@ -180,10 +179,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         RecyclerViewNotesManager.deleteItem(note);
                     });
 
-                    CustomDialogInformation cdd = new CustomDialogInformation(this,  resources.getString(R.string.dialog_error_read_file), ActionValues.CLOSE_ACTIVITY.getID());
-                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    cdd.show();
-                    //Toast.makeText(this, resources.getString(R.string.dialog_error_read_file), Toast.LENGTH_SHORT).show();
+                    createDialog.information(resources.getString(R.string.dialog_error_read_file), ActionValues.CLOSE_ACTIVITY.getID());
 
                 } else {
                     etEditor.setText(text);
@@ -269,6 +265,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                             unsavedChanged = false;
                             updateUnsavedChangesState();
                             Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -302,7 +300,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         String rutaRealArchivo = pathOz.getPath();
         String nombreArchivo = rutaRealArchivo.substring(rutaRealArchivo.lastIndexOf("/") + 1);
 
-        getSupportActionBar().setTitle(nombreArchivo);
+        if(getSupportActionBar() != null) getSupportActionBar().setTitle(nombreArchivo);
         note.setTitle(nombreArchivo);
         note.setRealPath(rutaRealArchivo);
 
@@ -324,7 +322,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         //Handle Exception (Optional)
         if (tr != null) {
-            Toast.makeText(this, tr.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e("tr", tr.getMessage());
         }
     }
 
@@ -374,15 +372,15 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if (id == R.id.save_file){   // overwrite existing file or create it
             if(saveFile())
                 Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
-
+            else
+                Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
             return true;
 
         } else if (id == R.id.close_app){  // close app
 
             if(!isAutosaveEnabled && unsavedChanged){
-                CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                createDialog.yesNo(resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
+
             } else {
                 this.finishAffinity();
             }
@@ -392,9 +390,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if(id == R.id.open_file) {  // open file
 
             if(!isAutosaveEnabled && unsavedChanged){
-                CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                createDialog.yesNo(resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
+
             } else {
                 FileUtil.openFileIntent(this);
             }
@@ -404,9 +401,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if(id == R.id.new_file_editor) {  // new file
 
             if(!isAutosaveEnabled && unsavedChanged){
-                CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                createDialog.yesNo(resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
+
             } else {
                 Intent intentNew = new Intent(this, EditorActivity.class);
                 this.startActivity(intentNew);
@@ -416,9 +412,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.file_info) {  // shows file info
-            CustomDialogFileInfo cdd = new CustomDialogFileInfo(this, note);
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            createDialog.fileInfo(note);
             return true;
 
         }else if(id == R.id.settings) {  // open settings
@@ -429,9 +423,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if(id == android.R.id.home){  // go back to main activity || close editorActivity
 
             if(!isAutosaveEnabled && unsavedChanged){
-                CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                createDialog.yesNo(resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
+
             } else {
                 finish();
             }
@@ -479,7 +472,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             updateUnsavedChangesState();
         }
 
-        Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
+        final Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
         Runnable workRunnable;
 
         @Override public void afterTextChanged(Editable s) {
@@ -528,20 +521,22 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     private boolean saveFile(){
-        boolean result = false;
 
         if (note.getPath() != null) {
             text = etEditor.getText().toString();
-            result = FileUtil.overwriteFile(note.getRealPath(), text, this);
-            if(result) {
+            if(FileUtil.overwriteFile(note.getRealPath(), text, this)){
                 unsavedChanged = false;
                 updateUnsavedChangesState();
+                return true;
+
+            } else {
+                return false;
             }
         } else {
             saveFileAs();
         }
 
-        return result;
+        return false;
     }
 
 
@@ -581,9 +576,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         // To work around this, use a postDelayed, which is supported in all versions.
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if(!isAutosaveEnabled && unsavedChanged) {
-                CustomDialogYesNo cdd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
-                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                cdd.show();
+                createDialog.yesNo(resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
+
             } else {
                 finish();
             }

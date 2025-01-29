@@ -1,27 +1,22 @@
 package com.marzane.notes_app.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.DialogPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
-import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
-import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 
 import java.util.Locale;
 
-import br.com.onimur.handlepathoz.BuildConfig;
+
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -93,7 +88,14 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference version = findPreference(getResources().getString(R.string.app_version_setting));
             if(version != null){
-                version.setSummary(BuildConfig.VERSION_NAME);
+                try{
+                    String versionName = getContext().getPackageManager()
+                            .getPackageInfo(getContext().getPackageName(), 0).versionName;;
+                    version.setSummary(versionName);
+                } catch (Exception ex){
+                    ex.printStackTrace();
+                }
+
             }
 
             Preference about = findPreference(getResources().getString(R.string.about_setting));

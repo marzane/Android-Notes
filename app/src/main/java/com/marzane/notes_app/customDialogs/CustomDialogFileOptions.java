@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +13,7 @@ import android.widget.TextView;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
+import com.marzane.notes_app.Utils.CreateDialog;
 import com.marzane.notes_app.activities.EditorActivity;
 import com.marzane.notes_app.models.NoteModel;
 
@@ -30,12 +29,14 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
     private TextView tvMessage;
     private NoteModel note;
     private Resources resources;
+    private CreateDialog createDialog;
 
     public CustomDialogFileOptions(Activity a, NoteModel note) {
         super(a);
         this.activity = a;
         this.note = note;
         resources = activity.getResources();
+        createDialog = new CreateDialog(a);
     }
 
     @Override
@@ -74,21 +75,15 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
             activity.startActivity(intent);
 
         } else if(id == R.id.button_file_info){
-            CustomDialogFileInfo cdd = new CustomDialogFileInfo(activity, note);
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            createDialog.fileInfo(note);
 
         } else if(id == R.id.button_delete_from_list){
             String message = resources.getString(R.string.dialog_remove_from_list);
-            CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.REMOVE_FROM_LIST.getID(), note);
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            createDialog.yesNoEdit(message, ActionValues.REMOVE_FROM_LIST.getID(), note);
 
         } else if (id == R.id.button_delete_file) {
             String message = resources.getString(R.string.dialog_delete_file);
-            CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, ActionValues.DELETE_FILE.getID(), note);
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            createDialog.yesNoEdit(message, ActionValues.DELETE_FILE.getID(), note);
 
         }
 

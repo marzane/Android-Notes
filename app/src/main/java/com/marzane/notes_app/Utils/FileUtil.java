@@ -2,15 +2,11 @@ package com.marzane.notes_app.Utils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
 import com.marzane.notes_app.ActionValues;
-import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,13 +18,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class FileUtil {
-
-    private static Resources resources;
-    private static CustomDialogInformation cdd;
-    private static String[] mimeTypes = { "text/*",
-            "application/jsonlines",
-            "application/javascript",
-            "application/textedit"};
 
     private FileUtil(){}
 
@@ -83,9 +72,7 @@ public class FileUtil {
             return true;
 
         } catch (IOException ex) {
-            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+
             return false;
         }
 
@@ -110,9 +97,7 @@ public class FileUtil {
             return true;
 
         } catch (IOException ex) {
-            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+
             return false;
         }
 
@@ -127,8 +112,6 @@ public class FileUtil {
      * @return boolean
      */
     public static boolean renameFile(Activity activity, String realPath, String newName) {
-        Boolean result = false;
-
         try{
             File directory = new File(realPath.substring(0, realPath.lastIndexOf("/")));   // directory
 
@@ -137,15 +120,12 @@ public class FileUtil {
             File to        = new File(directory, newName);  // future renamed file
 
             // if File from exists
-            result = from.renameTo(to);
+            return from.renameTo(to);
 
         } catch (Exception ex){
-            cdd = new CustomDialogInformation(activity, ex.getLocalizedMessage(), ActionValues.NOACTION.getID());
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            return false;
         }
 
-        return result;
     }
 
 

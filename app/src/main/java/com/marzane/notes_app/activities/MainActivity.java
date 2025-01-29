@@ -13,14 +13,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,13 +28,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.GridAutofitLayoutManager;
 import com.marzane.notes_app.R;
 import com.marzane.notes_app.SettingsService;
+import com.marzane.notes_app.Utils.CreateDialog;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
 import com.marzane.notes_app.customDialogs.CustomDialogInformation;
@@ -57,8 +55,7 @@ public class MainActivity extends AppCompatActivity{
     private CustomDialogYesNo cd;
     private SettingsService settingsService;
     private Locale locale;
-    private TextView tvEmptyList;
-
+    private CreateDialog createDialog;
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         resources = getResources();
-        tvEmptyList = findViewById(R.id.tvEmptyList);
+        createDialog = new CreateDialog(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -181,9 +178,7 @@ public class MainActivity extends AppCompatActivity{
             return true;
 
         } else if(id == R.id.clear_list){
-            cd = new CustomDialogYesNo(this, resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
-            cd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cd.show();
+            createDialog.yesNo(resources.getString(R.string.dialog_clear_list), ActionValues.CLEAR_LIST.getID());
             return true;
 
         }else if(id == R.id.settings) {  // open settings

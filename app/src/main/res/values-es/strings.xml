@@ -12,7 +12,7 @@
     <string name="dialog_close_app">Los cambios sin guardar se perderán. \n¿Cerrar aplicación?</string>
     <string name="dialog_open_file">Los cambios sin guardar se perderán. \n¿Abrir archivo?</string>
     <string name="dialog_new_file">Los cambios sin guardar se perderán. \n¿Crear un archivo nuevo?</string>
-    <string name="dialog_clear_list">¿Eliminar el historial de notas recientes?</string>
+    <string name="dialog_clear_list">¿Eliminar el historial de archivos recientes?</string>
     <string name="dialog_close_file">Los cambios sin guardar se perderán. \n¿Cerrar archivo?</string>
     <string name="dialog_remove_from_list">¿Está seguro de quitar este archivo de la lista? Puede reabrirlo en otro momento:</string>
     <string name="dialog_delete_file">¿Está seguro de eliminar este archivo permanentemente? Esta acción no se puede deshacer:</string>

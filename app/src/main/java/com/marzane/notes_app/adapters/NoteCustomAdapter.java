@@ -3,8 +3,6 @@ package com.marzane.notes_app.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.R;
 
+import com.marzane.notes_app.Utils.CreateDialog;
 import com.marzane.notes_app.activities.EditorActivity;
-import com.marzane.notes_app.customDialogs.CustomDialogFileOptions;
 import com.marzane.notes_app.models.NoteModel;
 import com.marzane.notes_app.Utils.DateUtil;
 
@@ -27,12 +25,14 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
     private ArrayList<NoteModel> noteList;
     private Activity activity;
     private Resources resources;
+    private CreateDialog createDialog;
 
 
     public NoteCustomAdapter(ArrayList<NoteModel> noteList, Activity activity) {
         this.noteList = noteList;
         this.activity = activity;
         this.resources = activity.getResources();
+        createDialog = new CreateDialog(activity);
     }
 
     /**
@@ -80,9 +80,7 @@ public class NoteCustomAdapter extends RecyclerView.Adapter<NoteCustomAdapter.Vi
         });
 
         viewHolder.itemView.setOnLongClickListener(view -> {
-            CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note);
-            cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            cdd.show();
+            createDialog.fileOptions(note);
             return true;
         });
     }

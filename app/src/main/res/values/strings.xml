@@ -28,7 +28,7 @@
     <string name="dialog_close_app">Unsaved changes will be lost. \nClose application?</string>
     <string name="dialog_open_file">Unsaved changes will be lost. \nOpen file?</string>
     <string name="dialog_new_file">Unsaved changes will be lost. \nCreate a new file?</string>
-    <string name="dialog_clear_list">Are you sure you want to clear recent notes history?</string>
+    <string name="dialog_clear_list">Are you sure you want to clear recent files history?</string>
     <string name="dialog_close_file">Unsaved changes will be lost. \nClose file?</string>
     <string name="dialog_remove_from_list">Are you sure you want to remove this file from the list? You can reopen it at any time:</string>
     <string name="dialog_delete_file">Are you sure you want to delete this file forever? This action cannot be undone:</string>
