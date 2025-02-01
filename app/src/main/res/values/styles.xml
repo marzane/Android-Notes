@@ -7,6 +7,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:background">@drawable/shape_actionbar</item>
         <item name="titleTextColor">@color/white</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     </style>
 
     <style name="content_toolbar">
@@ -23,9 +24,24 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="fondoPantalla">
+    <style name="mainAppLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
         <item name="android:background">@color/yellow</item>
     </style>
+
+    <style name="empty_list_message">
+        <item name="android:layout_width">200sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/lightBrown</item>
+    </style>
+
+
 
     <style name="input_editor">
         <item name="android:layout_width">match_parent</item>
@@ -35,6 +51,13 @@
         <item name="android:inputType">textMultiLine</item>
         <item name="android:textColor">@color/darkBrown</item>
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="rv_main">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="background">@drawable/editor_background</item>
     </style>
 
     <style name="rv_note_item">
@@ -54,6 +77,8 @@
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
+
+
 
     <!-- dialogs -->
     <style name="dialog_main">
@@ -75,7 +100,12 @@
         <item name="android:textColor">@color/yellow</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textAlignment">textStart</item>
-        <item name="android:minWidth">200dp</item>
+        <item name="android:minWidth">300dp</item>
+    </style>
+
+    <style name="dialog_message_file_options" parent="dialog_message">
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_marginBottom">30dp</item>
     </style>
 
     <style name="dialog_button">

@@ -1,33 +1,18 @@
 package com.marzane.notes_app.activities;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notes_app.ActionValues;
@@ -37,7 +22,6 @@ import com.marzane.notes_app.SettingsService;
 import com.marzane.notes_app.Utils.CreateDialog;
 import com.marzane.notes_app.adapters.NoteCustomAdapter;
 import com.marzane.notes_app.customDialogs.CustomDialogYesNo;
-import com.marzane.notes_app.customDialogs.CustomDialogInformation;
 import com.marzane.notes_app.Threads.TaskRunner;
 import com.marzane.notes_app.Threads.task.ListAllNotesTask;
 import com.marzane.notes_app.Utils.FileUtil;
@@ -66,8 +50,6 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(!checkStoragePermissions()) requestForStoragePermissions();
 
         settingsService = new SettingsService();
 
@@ -190,96 +172,6 @@ public class MainActivity extends AppCompatActivity{
             return super.onOptionsItemSelected(item);
         }
 
-    }
-
-
-    // - STORAGE PERMISSIONS -
-
-    // This code checks if Storage Permissions have been granted and returns a boolean:
-    public boolean checkStoragePermissions(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            //Android is 11 (R) or above
-            return Environment.isExternalStorageManager();
-        }else {
-            //Below android 11
-            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-
-    private static final int STORAGE_PERMISSION_CODE = 23;
-
-    // Request For Storage Permissions
-    private void requestForStoragePermissions() {
-        //Android is 11 (R) or above
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            try {
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
-                intent.setData(uri);
-                storageActivityResultLauncher.launch(intent);
-            }catch (Exception e){
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                storageActivityResultLauncher.launch(intent);
-            }
-        }else{
-            //Below android 11
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    STORAGE_PERMISSION_CODE
-            );
-        }
-
-    }
-
-    // Handle Permission Request Result
-    private ActivityResultLauncher<Intent> storageActivityResultLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    o -> {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-                            //Android is 11 (R) or above
-                            if(Environment.isExternalStorageManager()){
-                                //Manage External Storage Permissions Granted
-                                Log.d(TAG, "onActivityResult: Manage External Storage Permissions Granted");
-                            }else{
-                                //Manage External Storage Permissions denied
-                                CustomDialogInformation cdd = new CustomDialogInformation(this, resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
-                                cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                cdd.show();
-                            }
-                        }else{
-                            //Below android 11
-
-                        }
-                    });
-
-    // To handle permission request results for Android Versions below 11:
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == STORAGE_PERMISSION_CODE){
-            if(grantResults.length > 0){
-                boolean write = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean read = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if(read && write){
-                    Toast.makeText(MainActivity.this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
-                }else{
-                    CustomDialogInformation cdd = new CustomDialogInformation(this, resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
-                    cdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    cdd.show();
-                }
-            }
-        }
     }
 
 

@@ -11,6 +11,7 @@ import com.marzane.notes_app.ActionValues;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -83,10 +84,9 @@ public class FileUtil {
      *
      * @param realUri
      * @param text
-     * @param activity
      * @return boolean
      */
-    public static boolean overwriteFile(@NonNull String realUri, @NonNull String text, Activity activity) {
+    public static boolean overwriteFile(@NonNull String realUri, @NonNull String text) {
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(realUri));
@@ -104,14 +104,14 @@ public class FileUtil {
     }
 
 
+
     /**
      *
-     * @param activity
      * @param realPath "dir1/dir2/file.txt"
      * @param newName "newName.txt"
      * @return boolean
      */
-    public static boolean renameFile(Activity activity, String realPath, String newName) {
+    public static boolean renameFile(String realPath, String newName) {
         try{
             File directory = new File(realPath.substring(0, realPath.lastIndexOf("/")));   // directory
 

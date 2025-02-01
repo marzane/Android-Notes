@@ -4,7 +4,7 @@
 
     <TextView
         android:id="@+id/tv_dialog"
-        style="@style/dialog_message"
+        style="@style/dialog_message_file_options"
         android:text="this is the file.txt"/>
 
     <LinearLayout

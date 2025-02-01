@@ -27,11 +27,11 @@
             app:layout_constraintWidth_percent=".68"
             android:rotation="-6">
             <TextView
+                android:id="@+id/rv_note_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constrainedWidth="true"
                 app:layout_constrainedHeight="true"
-                android:id="@+id/rv_note_title"
                 android:text="title"
                 android:textColor="@color/darkBrown"
                 android:textSize="15sp"

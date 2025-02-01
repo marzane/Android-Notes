@@ -1,14 +1,20 @@
 package com.marzane.notes_app.activities;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.DocumentsContract;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,12 +28,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.marzane.notes_app.ActionValues;
 import com.marzane.notes_app.R;
@@ -64,6 +73,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private boolean saveOnDatabase = true;   // file can be saved on database? (recent notes history)
     private boolean enableSaveFile = true;   // save action can be performed?
     private boolean unsavedChanged = false;  // are there unsaved changes?
+    private boolean saveFileAs = false;      // this is for the "save fila as"
 
     // layout elements
     private EditText etEditor;
@@ -96,84 +106,89 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editor);
 
-        resources = getResources();
-        handlePathOz = new HandlePathOz(this, this);
-        settingsService = new SettingsService();
-        createDialog = new CreateDialog(this);
-        contentToolbar = findViewById(R.id.content_toolbar);
-        updateSettingsValues();
-
-        // initialize toolbar
-        Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
-        setSupportActionBar(toolbarTop);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
-
-        // initialize main editText
-        etEditor = findViewById(R.id.et_editor);
-        etEditor.requestFocus();
-        etEditor.setTextSize(fontSize);
-        textTools = new TextTools(this, etEditor);
-
-        // actualize state
-        if (savedInstanceState != null) {
-            locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
-            note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
-            text = savedInstanceState.getString(TEXT_STATE);
-            unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
-            enableSaveFile = savedInstanceState.getBoolean(SAVE_ENABLED);
-
-        } else {
-            locale = new Locale(settingsService.getLanguage(this));
-            note = new NoteModel();
-
+        if(!checkStoragePermissions()) {
+            requestForStoragePermissions();
         }
+        
+            setContentView(R.layout.activity_editor);
 
-        settingsService.setLocale(locale.getLanguage(), this);
+            resources = getResources();
+            handlePathOz = new HandlePathOz(this, this);
+            settingsService = new SettingsService();
+            createDialog = new CreateDialog(this);
+            contentToolbar = findViewById(R.id.content_toolbar);
+            updateSettingsValues();
 
+            // initialize toolbar
+            Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
+            setSupportActionBar(toolbarTop);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
 
-        // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
-        if(note.getTitle() == null) {
-            note.setTitle(resources.getString(R.string.default_title));
+            // initialize main editText
+            etEditor = findViewById(R.id.et_editor);
+            etEditor.requestFocus();
+            etEditor.setTextSize(fontSize);
+            textTools = new TextTools(this, etEditor);
 
-            // se muestra el nombre del archivo en la barra superior (action bar)
-            getSupportActionBar().setTitle(note.getTitle());
-        }
+            // actualize state
+            if (savedInstanceState != null) {
+                locale = (Locale) savedInstanceState.getSerializable(LOCALE_STATE);
+                note = (NoteModel) savedInstanceState.getSerializable(NOTE_STATE);
+                text = savedInstanceState.getString(TEXT_STATE);
+                unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
+                enableSaveFile = savedInstanceState.getBoolean(SAVE_ENABLED);
 
+            } else {
+                locale = new Locale(settingsService.getLanguage(this));
+                note = new NoteModel();
 
-        // this part is in case we are expecting an intent containing the uri file via "open file" or "open with"
-        intent = getIntent();
-        String action = intent.getAction();
-        Bundle b = intent.getExtras();
-        Uri uriFile = null;
-
-        if(Intent.ACTION_VIEW.equals(action)){  // "open with"
-            if(intent.getData() != null){
-                uriFile = intent.getData();
-                intent.setData(null);
-                saveOnDatabase = false;
-                enableSaveFile = false;
-            }
-               // when file is open this way, cannot be edited
-        } else if(b != null){  // "open file"
-            uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
-            if(uriFile != null){
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                saveOnDatabase = true;
             }
 
-        }
+            settingsService.setLocale(locale.getLanguage(), this);
 
 
-        if(uriFile != null) {  // obtengo la ruta real y el nombre del archivo
+            // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
+            if (note.getTitle() == null) {
+                note.setTitle(resources.getString(R.string.default_title));
+
+                // se muestra el nombre del archivo en la barra superior (action bar)
+                getSupportActionBar().setTitle(note.getTitle());
+            }
+
+
+            // this part is in case we are expecting an intent containing the uri file via "open file" or "open with"
+            intent = getIntent();
+            String action = intent.getAction();
+            Bundle b = intent.getExtras();
+            Uri uriFile = null;
+
+            if (Intent.ACTION_VIEW.equals(action)) {  // "open with"
+                if (intent.getData() != null) {
+                    uriFile = intent.getData();
+                    intent.setData(null);
+                    saveOnDatabase = false;
+                    enableSaveFile = false;
+                }
+                // when file is open this way, cannot be edited
+            } else if (b != null) {  // "open file"
+                uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
+                if (uriFile != null) {
+                    getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    saveOnDatabase = true;
+                }
+
+            }
+
+
+            if (uriFile != null) {  // obtengo la ruta real y el nombre del archivo
 
                 text = FileUtil.readFile(uriFile, this);
                 note.setPath(uriFile.toString());
 
-                if(text == null){  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
+                if (text == null) {  // no existe el archivo en la ubicacion proporcionada; se elimina de la lista
 
                     taskRunner.executeAsync(new deleteByPathTask(this, uriFile.toString()), (dataResult) -> {
                         RecyclerViewNotesManager.deleteItem(note);
@@ -186,7 +201,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                     handlePathOz.getRealPath(uriFile);
 
                     showKeyboard();
-                    
+
                     intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
                 }
 
@@ -259,15 +274,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                         note.setPath(uri.toString());
                         saveOnDatabase = true;
                         enableSaveFile = true;
+                        saveFileAs = true;
                         handlePathOz.getRealPath(uri);
-
-                        if(FileUtil.writeFile(uri, text, this)){
-                            unsavedChanged = false;
-                            updateUnsavedChangesState();
-                            Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
-                        }
 
                     }
                     break;
@@ -305,7 +313,18 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         note.setRealPath(rutaRealArchivo);
 
         if(!rutaRealArchivo.isEmpty()) {
-            Toast.makeText(this, resources.getString(R.string.opening_file) + " " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
+            if(saveFileAs) {
+                if (FileUtil.overwriteFile(note.getRealPath(), text)) {
+                    unsavedChanged = false;
+                    updateUnsavedChangesState();
+                    Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
+                }
+                saveFileAs = false;
+            } else {
+                Toast.makeText(this, resources.getString(R.string.opening_file) + " " + pathOz.getPath(), Toast.LENGTH_SHORT).show();
+            }
 
             // save this note in recent notes history?
             if(saveOnDatabase){
@@ -370,9 +389,10 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             return true;
 
         } else if (id == R.id.save_file){   // overwrite existing file or create it
-            if(saveFile())
+            int save = saveFile();
+            if(save == 1)
                 Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
-            else
+            else if(save == -1)
                 Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
             return true;
 
@@ -520,23 +540,23 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     }
 
 
-    private boolean saveFile(){
+    private int saveFile(){
 
-        if (note.getPath() != null) {
+        if (note.getRealPath() != null) {
             text = etEditor.getText().toString();
-            if(FileUtil.overwriteFile(note.getRealPath(), text, this)){
+            if(FileUtil.overwriteFile(note.getRealPath(), text)){
                 unsavedChanged = false;
                 updateUnsavedChangesState();
-                return true;
+                return 1;
 
             } else {
-                return false;
+                return -1;
             }
         } else {
             saveFileAs();
+            return 0;
         }
 
-        return false;
     }
 
 
@@ -589,4 +609,90 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     }
 
+
+
+    // - STORAGE PERMISSIONS -
+
+    // This code checks if Storage Permissions have been granted and returns a boolean:
+    public boolean checkStoragePermissions(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            //Android is 11 (R) or above
+            return Environment.isExternalStorageManager();
+        }else {
+            //Below android 11
+            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+
+    private static final int STORAGE_PERMISSION_CODE = 23;
+
+    // Request For Storage Permissions
+    private void requestForStoragePermissions() {
+        //Android is 11 (R) or above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+                intent.setData(uri);
+                storageActivityResultLauncher.launch(intent);
+            }catch (Exception e){
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                storageActivityResultLauncher.launch(intent);
+            }
+        }else{
+            //Below android 11
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    STORAGE_PERMISSION_CODE
+            );
+        }
+
+    }
+
+    // Handle Permission Request Result
+    private ActivityResultLauncher<Intent> storageActivityResultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    o -> {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+                            //Android is 11 (R) or above
+                            if(Environment.isExternalStorageManager()){
+                                //Manage External Storage Permissions Granted
+                                Log.d(TAG, "onActivityResult: Manage External Storage Permissions Granted");
+                                Toast.makeText(this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
+                            }else{
+                                //Manage External Storage Permissions denied
+                                createDialog.information(resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
+                            }
+                        }else{
+                            //Below android 11
+                        }
+                    });
+
+    // To handle permission request results for Android Versions below 11:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == STORAGE_PERMISSION_CODE){
+            if(grantResults.length > 0){
+                boolean write = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean read = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if(read && write){
+                    Toast.makeText(this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
+                }else{
+                    createDialog.information(resources.getString(R.string.permission_storage_denied), ActionValues.CLOSE_ACTIVITY.getID());
+                }
+            }
+        }
+    }
 }
