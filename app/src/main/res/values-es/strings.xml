@@ -32,7 +32,7 @@
     <string name="date_format">dd/MM/yyyy</string>
     <string name="autosave_title">Guardado automático</string>
     <string name="permission_storage_granted">Permisos de almacenamiento concedidos</string>
-    <string name="permission_storage_denied">Permisos de almacenamiento denegados: Esta aplicación necesita acceder al almacenamiento del dispositivo para leer y escribir archivos.</string>
+    <string name="permission_storage_denied">Permiso denegado: no se pueden guardar los cambios</string>
     <string name="fontSize_title">Tamaño de letra</string>
     <string name="file_not_saved">no se pudo guardar el archivo</string>
     <string name="opening_file">abriendo archivo</string>

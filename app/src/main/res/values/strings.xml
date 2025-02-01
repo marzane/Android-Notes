@@ -84,7 +84,7 @@
 
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>
-    <string name="permission_storage_denied">Storage Permissions Denied: This app needs to access device storage to read and write files</string>
+    <string name="permission_storage_denied">Permission denied: changes cannot be saved</string>
 
 
 </resources>
