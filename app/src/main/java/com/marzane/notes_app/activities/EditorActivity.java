@@ -93,17 +93,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable(LOCALE_STATE, locale);
-        savedInstanceState.putSerializable(NOTE_STATE, note);
-        savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
-        savedInstanceState.putBoolean(UNSAVED_STATE, unsavedChanged);
-        savedInstanceState.putBoolean(SAVE_ENABLED, enableSaveFile);
-
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -164,10 +153,10 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             if (intent.getData() != null) {
                 uriFile = intent.getData();
                 intent.setData(null);
-                saveOnDatabase = false;
+                saveOnDatabase = false;  // when file is open this way, cannot be edited
                 enableSaveFile = false;
             }
-            // when file is open this way, cannot be edited
+
         } else if (b != null) {  // "open file"
             uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
             if (uriFile != null) {
@@ -203,6 +192,18 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putSerializable(LOCALE_STATE, locale);
+        savedInstanceState.putSerializable(NOTE_STATE, note);
+        savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
+        savedInstanceState.putBoolean(UNSAVED_STATE, unsavedChanged);
+        savedInstanceState.putBoolean(SAVE_ENABLED, enableSaveFile);
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
 
@@ -397,7 +398,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if (id == R.id.close_app){  // close app
 
-            if(!isAutosaveEnabled && unsavedChanged){
+            if(unsavedChanged){
                 createDialog.yesNo(resources.getString(R.string.dialog_close_app), ActionValues.CLOSE_APP.getID());
 
             } else {
@@ -408,7 +409,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if(id == R.id.open_file) {  // open file
 
-            if(!isAutosaveEnabled && unsavedChanged){
+            if(unsavedChanged){
                 createDialog.yesNo(resources.getString(R.string.dialog_open_file), ActionValues.OPEN_FILE_PROVIDER.getID());
 
             } else {
@@ -419,7 +420,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if(id == R.id.new_file_editor) {  // new file
 
-            if(!isAutosaveEnabled && unsavedChanged){
+            if(unsavedChanged){
                 createDialog.yesNo(resources.getString(R.string.dialog_new_file), ActionValues.NEW_FILE.getID());
 
             } else {
@@ -441,7 +442,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         } else if(id == android.R.id.home){  // go back to main activity || close editorActivity
 
-            if(!isAutosaveEnabled && unsavedChanged){
+            if(unsavedChanged){
                 createDialog.yesNo(resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
 
             } else {
@@ -500,7 +501,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             if(isAutosaveEnabled){
                 handler.removeCallbacks(workRunnable);
                 workRunnable = () -> doSmth(s.toString());
-                handler.postDelayed(workRunnable, 500 /*delay*/);
+                handler.postDelayed(workRunnable, 300 /*delay*/);
             }
 
         }
@@ -606,7 +607,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         // Detecting a long press of the back button via onLongPress is broken in Android N.
         // To work around this, use a postDelayed, which is supported in all versions.
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!isAutosaveEnabled && unsavedChanged) {
+            if(unsavedChanged) {
                 createDialog.yesNo(resources.getString(R.string.dialog_close_file), ActionValues.CLOSE_EDITOR.getID());
 
             } else {

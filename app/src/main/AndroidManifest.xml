@@ -43,7 +43,6 @@
                 <data android:mimeType="@string/mime_type" />
                 <data android:mimeType="application/javascript" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activities.MainActivity"
