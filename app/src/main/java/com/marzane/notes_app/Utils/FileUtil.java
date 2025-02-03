@@ -157,4 +157,9 @@ public class FileUtil {
 
         activity.startActivityForResult(intent, ActionValues.OPEN_FILE_PROVIDER.getID());
     }
+
+
+    public static boolean isGoogleDriveUri(Uri uri) {
+        return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
+    }
 }

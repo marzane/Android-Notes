@@ -160,10 +160,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         } else if (b != null) {  // "open file"
             uriFile = (Uri) b.get(resources.getString(R.string.extra_intent_uri_file));
             if (uriFile != null) {
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                saveOnDatabase = true;
+                if(FileUtil.isGoogleDriveUri(uriFile)) {
+                    saveOnDatabase = false;
+                    enableSaveFile = false;
+
+                } else {
+                    getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    saveOnDatabase = true;
                 }
+            }
 
         }
 
@@ -260,19 +266,25 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     if (intent != null && intent.getData() != null) {
-                        text = etEditor.getText().toString();
 
                         Uri uri = intent.getData();
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
 
-                        note = new NoteModel();
-                        note.setPath(uri.toString());
-                        saveOnDatabase = true;
-                        enableSaveFile = true;
-                        saveFileAs = true;
-                        handlePathOz.getRealPath(uri);
+                        if(!FileUtil.isGoogleDriveUri(uri)){
+                            text = etEditor.getText().toString();
+
+                            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
+
+                            note = new NoteModel();
+                            note.setPath(uri.toString());
+                            saveOnDatabase = true;
+                            enableSaveFile = true;
+                            saveFileAs = true;
+                            handlePathOz.getRealPath(uri);
+                        } else {
+                            Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                     break;

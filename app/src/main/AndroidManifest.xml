@@ -28,11 +28,11 @@
             android:name=".activities.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
+
         <activity
             android:name=".activities.EditorActivity"
             android:exported="true"
             android:windowSoftInputMode="stateVisible|adjustResize" >
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
@@ -44,6 +44,7 @@
                 <data android:mimeType="application/javascript" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">
@@ -52,6 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
