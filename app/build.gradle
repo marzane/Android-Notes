@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.marzane.notes_app'
+    namespace 'com.marzane.notepad'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.marzane.notes_app"
+        applicationId "com.marzane.notepad"
         minSdk 24
         targetSdk 34
         versionCode 1
