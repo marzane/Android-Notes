@@ -3,5 +3,6 @@
     <style name="Base.Theme.Notepad" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimaryDark">@color/lightBrown</item>
     </style>
 </resources>

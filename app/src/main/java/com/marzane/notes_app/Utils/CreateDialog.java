@@ -23,31 +23,31 @@ public class CreateDialog {
     public void yesNo(String message, int action){
         CustomDialogYesNo cd = new CustomDialogYesNo(activity, message, action);
         if(cd.getWindow() != null) cd.getWindow().setBackgroundDrawable(bg);
-        cd.create();
+        cd.show();
     }
 
     public void yesNoEdit(String message, int action, NoteModel note){
         CustomDialogYesNoEdit cdd = new CustomDialogYesNoEdit(activity, message, action, note);
         if(cdd.getWindow() != null) cdd.getWindow().setBackgroundDrawable(bg);
-        cdd.create();
+        cdd.show();
     }
 
     public void information(String message, int action){
         CustomDialogInformation cd = new CustomDialogInformation(activity, message, action);
         if(cd.getWindow() != null) cd.getWindow().setBackgroundDrawable(bg);
-        cd.create();
+        cd.show();
     }
 
     public void fileInfo(NoteModel note){
         CustomDialogFileInfo cdd = new CustomDialogFileInfo(activity, note);
         if(cdd.getWindow() != null) cdd.getWindow().setBackgroundDrawable(bg);
-        cdd.create();
+        cdd.show();
     }
 
     public void fileOptions(NoteModel note){
         CustomDialogFileOptions cdd = new CustomDialogFileOptions(activity, note);
         if(cdd.getWindow() != null) cdd.getWindow().setBackgroundDrawable(bg);
-        cdd.create();
+        cdd.show();
     }
 
 }
