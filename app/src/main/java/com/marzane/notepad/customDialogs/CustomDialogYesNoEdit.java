@@ -1,15 +1,25 @@
 package com.marzane.notepad.customDialogs;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
+import android.webkit.PermissionRequest;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notepad.ActionValues;
@@ -86,12 +96,16 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
         if(id == R.id.button_accept){
             // do an action
             if(action == ActionValues.DELETE_FILE.getID()){
-                deleted = FileUtil.deleteFile(note.getRealPath());
+                if(checkStoragePermissions()){
+                    deleted = FileUtil.deleteFile(note.getRealPath());
 
-                if(!deleted){
-                    Toast.makeText(activity, R.string.deleted_file_error, Toast.LENGTH_SHORT).show();
+                    if(!deleted){
+                        Toast.makeText(activity, R.string.deleted_file_error, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(activity, R.string.deleted_file_ok, Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(activity, R.string.deleted_file_ok, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.deleted_file_error, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -118,4 +132,23 @@ public class CustomDialogYesNoEdit extends Dialog implements View.OnClickListene
         }
         dismiss();
     }
+
+
+
+    // - STORAGE PERMISSIONS -
+
+    // This code checks if Storage Permissions have been granted and returns a boolean:
+    public boolean checkStoragePermissions(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            //Android is 11 (R) or above
+            return Environment.isExternalStorageManager();
+        }else {
+            //Below android 11
+            int write = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
 }

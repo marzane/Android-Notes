@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity{
     private static final int STORAGE_PERMISSION_CODE = 23;
 
     // Request For Storage Permissions
-    private void requestForStoragePermissions() {
+    public void requestForStoragePermissions() {
         //Android is 11 (R) or above
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
             try {

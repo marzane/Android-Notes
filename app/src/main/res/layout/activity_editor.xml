@@ -20,7 +20,6 @@
             style="@style/input_editor"
             android:text=""
             android:focusedByDefault="true"
-            android:textIsSelectable="true"
             android:id="@+id/et_editor"
             />
     </ScrollView>
