@@ -23,6 +23,12 @@
     <string name="menu_save_file">save</string>
     <string name="menu_file_info">info</string>
     <string name="menu_settings">settings</string>
+    <string name="menu_submenu">More actions</string>
+    <string name="menu_cut">Cut</string>
+    <string name="menu_copy">Copy</string>
+    <string name="menu_paste">Paste</string>
+    <string name="menu_select">Select</string>
+    <string name="menu_selectAll">Select all</string>
 
     <!-- dialog messages -->
     <string name="dialog_close_app">Unsaved changes will be lost. \nClose application?</string>
@@ -48,7 +54,6 @@
     <string name="deleted_file_ok">file deleted successfully</string>
     <string name="deleted_file_error">file could not be deleted</string>
     <string name="copy_to_clipboard">copied to clipboard</string>
-    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
     <string name="file_saved">file saved</string>
     <string name="file_not_saved">file could not be saved</string>
     <string name="opening_file">opening file</string>
@@ -56,6 +61,7 @@
 
     <!-- ******** -->
     <!-- SETTINGS -->
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="general_header">General</string>
@@ -84,7 +90,8 @@
 
     <!-- message when user grants or denies storage permission -->
     <string name="permission_storage_granted">Storage Permissions Granted</string>
-    <string name="permission_storage_denied">Permission denied: changes cannot be saved</string>
+    <string name="permission_storage_denied">Permission denied: Changes cannot be saved</string>
+    <string name="permission_storage_denied_main">Permission denied: Cannot edit or delete files</string>
 
 
 </resources>

@@ -12,7 +12,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/editor_background"
         android:layout_weight="80">
 
@@ -20,6 +20,7 @@
             style="@style/input_editor"
             android:text=""
             android:focusedByDefault="true"
+            android:textIsSelectable="true"
             android:id="@+id/et_editor"
             />
     </ScrollView>

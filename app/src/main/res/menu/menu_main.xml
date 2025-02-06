@@ -17,7 +17,7 @@
     <item
         android:id="@+id/action_menu"
         android:icon="@drawable/popup_menu"
-        android:title="submenu"
+        android:title="@string/menu_submenu"
         app:showAsAction="always">
         <menu>
             <item android:id="@+id/clear_list"

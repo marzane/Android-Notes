@@ -45,4 +45,11 @@
     <string name="about_description">descripción de la aplicación</string>
     <string name="deleted_file_error">No se pudo eliminar el archivo</string>
     <string name="list_empty">"Pulsa + para crear un archivo nuevo, o abre un archivo existente "</string>
+    <string name="permission_storage_denied_main">Permiso denegado: no se pueden editar o eliminar archivos</string>
+    <string name="menu_submenu">Más acciones</string>
+    <string name="menu_cut">Cortar</string>
+    <string name="menu_copy">Copiar</string>
+    <string name="menu_paste">Pegar</string>
+    <string name="menu_select">Seleccionar</string>
+    <string name="menu_selectAll">Seleccionar todo</string>
 </resources>

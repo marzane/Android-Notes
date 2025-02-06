@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -478,14 +479,22 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             textTools.paste();
             return true;
 
-        } else if(id == R.id.button_select_all) {  // paste
+        } else if(id == R.id.button_select_all) {  // select all
             textTools.selectAll();
             return true;
 
-        } else if(id == R.id.button_select) {  // paste
+        } else if(id == R.id.button_select) {  // select current word
             textTools.select();
             return true;
+/*
+        } else if(id == R.id.button_move_start){
+            textTools.cursorToLeft();
+            return true;
 
+        } else if(id == R.id.button_move_end){
+            textTools.cursorToRight();
+            return true;
+*/
         } else {
             return super.onOptionsItemSelected(item);
         }

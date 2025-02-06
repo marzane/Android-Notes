@@ -1,18 +1,30 @@
 package com.marzane.notepad.activities;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.Environment;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.marzane.notepad.ActionValues;
@@ -34,7 +46,6 @@ public class MainActivity extends AppCompatActivity{
 
     private TaskRunner taskRunner = new TaskRunner();
     private RecyclerView rvNoteList;
-    private int screen_width, screen_height;
     private Resources resources;
     private CustomDialogYesNo cd;
     private SettingsService settingsService;
@@ -58,9 +69,16 @@ public class MainActivity extends AppCompatActivity{
         } else {
             locale = new Locale(settingsService.getLanguage(this));
         }
-        settingsService.setLocale(locale.getLanguage(), this);
+
+        if(locale != null)
+            settingsService.setLocale(locale.getLanguage(), this);
 
         setContentView(R.layout.activity_main);
+
+
+        if(!checkStoragePermissions()){
+            requestForStoragePermissions();
+        }
 
         resources = getResources();
         createDialog = new CreateDialog(this);
@@ -69,11 +87,6 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
         rvNoteList = findViewById(R.id.rv_recent_notes);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        screen_height = displayMetrics.heightPixels;
-        screen_width = displayMetrics.widthPixels;
 
 
         // initialize recent notes list
@@ -174,6 +187,93 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+
+
+    // - STORAGE PERMISSIONS -
+
+    // This code checks if Storage Permissions have been granted and returns a boolean:
+    public boolean checkStoragePermissions(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            //Android is 11 (R) or above
+            return Environment.isExternalStorageManager();
+        }else {
+            //Below android 11
+            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+
+    private static final int STORAGE_PERMISSION_CODE = 23;
+
+    // Request For Storage Permissions
+    private void requestForStoragePermissions() {
+        //Android is 11 (R) or above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            try {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+                intent.setData(uri);
+                storageActivityResultLauncher.launch(intent);
+            }catch (Exception e){
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                storageActivityResultLauncher.launch(intent);
+            }
+        }else{
+            //Below android 11
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    STORAGE_PERMISSION_CODE
+            );
+        }
+
+    }
+
+    // Handle Permission Request Result
+    private final ActivityResultLauncher<Intent> storageActivityResultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    o -> {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+                            //Android is 11 (R) or above
+                            if(Environment.isExternalStorageManager()){
+                                //Manage External Storage Permissions Granted
+                                Log.d(TAG, "onActivityResult: Manage External Storage Permissions Granted");
+                                Toast.makeText(this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
+                            }else{
+                                //Manage External Storage Permissions denied
+                                createDialog.information(resources.getString(R.string.permission_storage_denied_main), ActionValues.NOACTION.getID());
+                            }
+                        }else{
+                            //Below android 11
+                        }
+                    });
+
+    // To handle permission request results for Android Versions below 11:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == STORAGE_PERMISSION_CODE){
+            if(grantResults.length > 0){
+                boolean write = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean read = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if(read && write){
+                    Toast.makeText(this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
+
+                }else{
+                    createDialog.information(resources.getString(R.string.permission_storage_denied_main), ActionValues.NOACTION.getID());
+                }
+            }
+        }
+    }
 
 }
 

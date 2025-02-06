@@ -59,7 +59,6 @@ public class TextTools {
 
 
     public String select(){
-        //editText.setSelection();
         Spannable textSpan = editText.getText();
         final int selection = editText.getSelectionStart();
         final Pattern pattern = Pattern.compile("\\w+");
@@ -84,5 +83,29 @@ public class TextTools {
 
     public void selectAll(){
         editText.selectAll();
+    }
+
+
+    public void cursorToEnd(){
+        editText.setSelection(editText.getText().length());
+    }
+
+
+    public void cursorToStart(){
+        editText.setSelection(0);
+    }
+
+
+    public void cursorToRight(){
+        final int selection = editText.getSelectionStart();
+        if(selection < editText.getText().length())
+            editText.setSelection(selection + 1);
+    }
+
+
+    public void cursorToLeft(){
+        final int selection = editText.getSelectionStart();
+        if(selection > 0)
+            editText.setSelection(selection - 1);
     }
 }
