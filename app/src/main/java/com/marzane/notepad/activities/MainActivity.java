@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_main);
 
-
+        /*
         if(!checkStoragePermissions()){
             requestForStoragePermissions();
         }
-
+        */
         resources = getResources();
         createDialog = new CreateDialog(this);
 

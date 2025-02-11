@@ -68,7 +68,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:layout_marginBottom="10dp">
-
+<!--
         <LinearLayout
             android:id="@+id/button_delete_file"
             android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                 style="@style/dialog_text_option"
                 android:text="@string/dialog_option_delete_file" />
         </LinearLayout>
-
+-->
         <LinearLayout
             android:id="@+id/button_delete_from_list"
             android:layout_width="match_parent"
@@ -94,7 +94,7 @@
             android:layout_weight="30">
             <ImageView
                 style="@style/dialog_button"
-                android:src="@drawable/remove_48px"
+                android:src="@drawable/recycle_bin_48px"
                 android:layout_gravity="center"/>
 
             <TextView

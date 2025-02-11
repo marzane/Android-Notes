@@ -50,13 +50,13 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
         edit = findViewById(R.id.button_edit);
         info = findViewById(R.id.button_file_info);
         removeList = findViewById(R.id.button_delete_from_list);
-        delete = findViewById(R.id.button_delete_file);
+        //delete = findViewById(R.id.button_delete_file);
 
         back.setOnClickListener(this);
         edit.setOnClickListener(this);
         info.setOnClickListener(this);
         removeList.setOnClickListener(this);
-        delete.setOnClickListener(this);
+        //delete.setOnClickListener(this);
         tvMessage.setText(note.getTitle());
     }
 
@@ -81,11 +81,14 @@ public class CustomDialogFileOptions extends Dialog implements View.OnClickListe
             String message = resources.getString(R.string.dialog_remove_from_list);
             createDialog.yesNoEdit(message, ActionValues.REMOVE_FROM_LIST.getID(), note);
 
-        } else if (id == R.id.button_delete_file) {
+        } /*
+          else if (id == R.id.button_delete_file) {
             String message = resources.getString(R.string.dialog_delete_file);
             createDialog.yesNoEdit(message, ActionValues.DELETE_FILE.getID(), note);
 
         }
+
+        */
 
         dismiss();
     }

@@ -1,6 +1,5 @@
 package com.marzane.notepad.activities;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,17 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.DocumentsContract;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +24,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +44,7 @@ import com.marzane.notepad.models.NoteModel;
 import com.marzane.notepad.Utils.FileUtil;
 import com.marzane.notepad.Utils.RecyclerViewNotesManager;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
@@ -69,12 +63,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private Locale locale;
     private CreateDialog createDialog;
 
-    private boolean isAutosaveEnabled;
-    private boolean isToolbarEnabled;
     private boolean saveOnDatabase = true;   // file can be saved on database? (recent notes history)
     private boolean enableSaveFile = true;   // save action can be performed?
-    private boolean unsavedChanged = false;  // are there unsaved changes?
     private boolean saveFileAs = false;      // this is for the "save fila as"
+    private boolean unsavedChanged;          // are there unsaved changes?
+    private boolean isAutosaveEnabled;
+    private boolean isToolbarEnabled;
+    private boolean textwatcherOnCreate;
 
     // layout elements
     private EditText etEditor;
@@ -91,6 +86,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private static final String TEXT_STATE = "TEXT";
     private static final String UNSAVED_STATE = "UNSAVEDCHANGES";
     private static final String SAVE_ENABLED = "SAVEENABLED";
+
+    private final String TEMP_DIR = "temp";
 
 
     @Override
@@ -109,13 +106,21 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         // initialize toolbar
         Toolbar toolbarTop = findViewById(R.id.toolbar_editor);
         setSupportActionBar(toolbarTop);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow_left);
+        }
+
 
         // initialize main editText
         etEditor = findViewById(R.id.et_editor);
+        etEditor.setSaveEnabled(false);
         etEditor.requestFocus();
         etEditor.setTextSize(fontSize);
+
+        unsavedChanged = false;
+        textwatcherOnCreate = true;
+
         textTools = new TextTools(this, etEditor);
 
         // actualize state
@@ -125,6 +130,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             text = savedInstanceState.getString(TEXT_STATE);
             unsavedChanged = savedInstanceState.getBoolean(UNSAVED_STATE);
             enableSaveFile = savedInstanceState.getBoolean(SAVE_ENABLED);
+
+            etEditor.setText(text);
 
         } else {
             locale = new Locale(settingsService.getLanguage(this));
@@ -139,9 +146,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         if (note.getTitle() == null) {
             note.setTitle(resources.getString(R.string.default_title));
 
-            // se muestra el nombre del archivo en la barra superior (action bar)
-            getSupportActionBar().setTitle(note.getTitle());
         }
+
+        getSupportActionBar().setTitle(note.getTitle());
 
 
         // this part is in case we are expecting an intent containing the uri file via "open file" or "open with"
@@ -169,6 +176,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                     getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     getContentResolver().takePersistableUriPermission(uriFile, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     saveOnDatabase = true;
+
+
                 }
             }
 
@@ -190,6 +199,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
             } else {
                 etEditor.setText(text);
+                updateUnsavedChangesState();
                 handlePathOz.getRealPath(uriFile);
 
                 showKeyboard();
@@ -199,11 +209,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
+        etEditor.addTextChangedListener(textWatcher);
+
+
     }
 
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        textwatcherOnCreate = true;
+
         savedInstanceState.putSerializable(LOCALE_STATE, locale);
         savedInstanceState.putSerializable(NOTE_STATE, note);
         savedInstanceState.putSerializable(TEXT_STATE, etEditor.getText().toString());
@@ -214,17 +229,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     }
 
 
-    @Override
-    protected void onStart() {
-        etEditor.removeTextChangedListener(textWatcher);
-        super.onStart();
-
-    }
-
 
     @Override
     protected void onResume() {
-        etEditor.addTextChangedListener(textWatcher);
 
         updateSettingsValues();
 
@@ -385,7 +392,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     private void disableSaveOption(){
         saveButton.setIcon(R.drawable.file_save_disabled);
-        //saveButton.setEnabled(false);
     }
 
 
@@ -428,7 +434,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             } else {
                 FileUtil.openFileIntent(this);
             }
-
             return true;
 
         } else if(id == R.id.new_file_editor) {  // new file
@@ -441,7 +446,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                 this.startActivity(intentNew);
                 this.finish();
             }
-
             return true;
 
         } else if (id == R.id.file_info) {  // shows file info
@@ -510,8 +514,15 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            unsavedChanged = true;
-            updateUnsavedChangesState();
+
+            if(textwatcherOnCreate && !unsavedChanged) {
+                textwatcherOnCreate = false;
+                updateUnsavedChangesState();
+            } else {
+                unsavedChanged = true;
+                updateUnsavedChangesState();
+            }
+
         }
 
         final Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
@@ -527,8 +538,13 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         }
 
-        private void doSmth(String str) {
-            saveFile();
+        private void doSmth(String str){
+            try{
+                saveFile();
+            } catch (Exception e){
+                Log.getStackTraceString(e);
+            }
+
         }
 
     };
@@ -539,11 +555,9 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         if(saveButton != null){
             if(unsavedChanged){ // si hay cambios sin guardar
                 saveButton.setIcon(R.drawable.file_unsaved);
-                //saveButton.setEnabled(true);
 
             } else {
                 saveButton.setIcon(R.drawable.file_save);
-                //saveButton.setEnabled(false);
             }
         }
     }
@@ -559,13 +573,14 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
 
-    private int saveFile(){
+    private int saveFile() throws IOException {
 
         if (note.getRealPath() != null) {
             text = etEditor.getText().toString();
-            if(FileUtil.overwriteFile(note.getRealPath(), text)){
+            if(FileUtil.overwriteFileStream(this, Uri.parse(note.getPath()), text)){
                 unsavedChanged = false;
                 updateUnsavedChangesState();
+
                 return 1;
 
             } else {
@@ -580,12 +595,24 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
 
     private void saveFileManageResult(){
-        int save = saveFile();
+        try{
+            int save = saveFile();
 
-        if (save == 1)
-            Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
-        else if (save == -1)
+            if (save == 1)
+                Toast.makeText(this, resources.getString(R.string.file_saved), Toast.LENGTH_SHORT).show();
+            else if (save == -1)
+                Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
             Toast.makeText(this, resources.getString(R.string.file_not_saved), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+
+
+    private String copyToInternalStorage(Uri uri){
+        return FileUtil.copyFileToInternalStorage(this, uri, TEMP_DIR);
     }
 
 
@@ -648,16 +675,11 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     // This code checks if Storage Permissions have been granted and returns a boolean:
     public boolean checkStoragePermissions(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            //Android is 11 (R) or above
-            return Environment.isExternalStorageManager();
-        }else {
             //Below android 11
             int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
             return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
-        }
     }
 
 
@@ -666,19 +688,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     // Request For Storage Permissions
     private void requestForStoragePermissions() {
         //Android is 11 (R) or above
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            try {
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                Uri uri = Uri.fromParts("package", this.getPackageName(), null);
-                intent.setData(uri);
-                storageActivityResultLauncher.launch(intent);
-            }catch (Exception e){
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                storageActivityResultLauncher.launch(intent);
-            }
-        }else{
+        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+
             //Below android 11
             ActivityCompat.requestPermissions(
                     this,
@@ -688,31 +699,10 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                     },
                     STORAGE_PERMISSION_CODE
             );
-        }
+
 
     }
 
-    // Handle Permission Request Result
-    private final ActivityResultLauncher<Intent> storageActivityResultLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    o -> {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-                            //Android is 11 (R) or above
-                            if(Environment.isExternalStorageManager()){
-                                //Manage External Storage Permissions Granted
-                                Log.d(TAG, "onActivityResult: Manage External Storage Permissions Granted");
-                                Toast.makeText(this, resources.getString(R.string.permission_storage_granted), Toast.LENGTH_SHORT).show();
-
-                                saveFileManageResult();
-                                saveFileAs = false;
-                            }else{
-                                //Manage External Storage Permissions denied
-                                createDialog.information(resources.getString(R.string.permission_storage_denied), ActionValues.NOACTION.getID());
-                            }
-                        }else{
-                            //Below android 11
-                        }
-                    });
 
     // To handle permission request results for Android Versions below 11:
     @Override
@@ -734,4 +724,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
             }
         }
     }
+
+
 }

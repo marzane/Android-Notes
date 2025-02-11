@@ -1,8 +1,13 @@
 package com.marzane.notepad.Utils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,8 +16,11 @@ import com.marzane.notepad.ActionValues;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -103,6 +111,24 @@ public class FileUtil {
     }
 
 
+    public static boolean overwriteFileStream(Context context, Uri uri, String text) throws IOException {
+        ContentResolver contentResolver = context.getContentResolver();
+        OutputStream outputStream = contentResolver.openOutputStream(uri, "wt");
+
+        if (outputStream == null) {
+            throw new IOException();
+        }
+
+        try {
+            outputStream.write(text.getBytes());
+            return true;
+
+        } finally {
+            outputStream.close();
+        }
+    }
+
+
 
     /**
      *
@@ -162,4 +188,88 @@ public class FileUtil {
     public static boolean isGoogleDriveUri(Uri uri) {
         return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
     }
+
+
+    public static String copyFileToInternalStorage(Context mContext, Uri uri, String newDirName) {
+        Uri returnUri = uri;
+
+        Cursor returnCursor = mContext.getContentResolver().query(returnUri, new String[]{
+                OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE
+        }, null, null, null);
+
+
+        /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        String name = (returnCursor.getString(nameIndex));
+        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+
+        File output;
+        if (!newDirName.equals("")) {
+            File dir = new File(mContext.getFilesDir() + "/" + newDirName);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            output = new File(mContext.getFilesDir() + "/" + newDirName + "/" + name);
+        } else {
+            output = new File(mContext.getFilesDir() + "/" + name);
+        }
+        try {
+            InputStream inputStream = mContext.getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = new FileOutputStream(output);
+            int read = 0;
+            int bufferSize = 1024;
+            final byte[] buffers = new byte[bufferSize];
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+        } catch (Exception e) {
+
+            Log.e("Exception", e.getMessage());
+        }
+
+        return output.getPath();
+    }
+
+
+    public static boolean copyFile(String from, String to) {
+        boolean result = false;
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File oldfile = new File(from);
+            if (oldfile.exists()) {
+                Log.d("ifExists", "Old file exists! ");
+                InputStream inStream = new FileInputStream(from);
+                FileOutputStream fs = new FileOutputStream(to);
+                Log.d("ifExists", "copyFile: " + fs);
+                byte[] buffer = new byte[1444];
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    bytesum += byteread;
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+                fs.close();
+                Log.d("ifExists", "File has been created ");
+                result =  true;
+            }
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            result = false;
+        }
+
+        return result;
+    }
+
+
 }
