@@ -2,72 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/dialog_main">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="end">
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete_32px"
+            android:background="@color/transparent"
+
+            />
+    </LinearLayout>
+
+
     <TextView
         android:id="@+id/tv_dialog"
         style="@style/dialog_message_file_options"
         android:text="this is the file.txt"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:layout_marginBottom="5dp">
-
-        <LinearLayout
-            android:id="@+id/button_back"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="30"
-            android:orientation="vertical">
-            <ImageView
-                style="@style/dialog_button"
-                android:src="@drawable/arrow_left_48px"
-                android:layout_gravity="center"/>
-            <TextView
-                style="@style/dialog_text_option"
-                android:text="@string/dialog_option_back" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/button_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="30">
-            <ImageView
-                style="@style/dialog_button"
-                android:src="@drawable/pencil_48px"
-                android:layout_gravity="center"/>
-            <TextView
-                style="@style/dialog_text_option"
-                android:text="@string/dialog_option_edit" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/button_file_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="30">
-            <ImageView
-                style="@style/dialog_button"
-                android:src="@drawable/document_48px"
-                android:layout_gravity="center"/>
-            <TextView
-                style="@style/dialog_text_option"
-                android:text="@string/dialog_option_info" />
-        </LinearLayout>
-
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
-        android:layout_marginBottom="10dp">
+        android:background="@drawable/shape_grey_border_top"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="20dp">
 <!--
         <LinearLayout
             android:id="@+id/button_delete_file"
@@ -86,6 +54,8 @@
                 android:text="@string/dialog_option_delete_file" />
         </LinearLayout>
 -->
+
+
         <LinearLayout
             android:id="@+id/button_delete_from_list"
             android:layout_width="match_parent"
@@ -100,6 +70,37 @@
             <TextView
                 style="@style/dialog_text_option"
                 android:text="@string/dialog_option_remove_from_list"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/pencil_48px"
+                android:layout_gravity="center"/>
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="@string/dialog_option_edit" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/button_file_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="30">
+            <ImageView
+                style="@style/dialog_button"
+                android:src="@drawable/document_48px"
+                android:layout_gravity="center"/>
+            <TextView
+                style="@style/dialog_text_option"
+                android:text="@string/dialog_option_info" />
         </LinearLayout>
 
     </LinearLayout>

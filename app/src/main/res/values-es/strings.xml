@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="default_title">nuevo.txt</string>
-    <string name="menu_clear_list">limpiar lista</string>
-    <string name="menu_close_app">salir</string>
-    <string name="menu_open_file">abrir</string>
+    <string name="menu_clear_list">Limpiar lista</string>
+    <string name="menu_close_app">Salir</string>
+    <string name="menu_open_file">Abrir</string>
     <string name="menu_save_as">guardar como</string>
-    <string name="menu_new_file">nuevo</string>
-    <string name="menu_save_file">guardar</string>
-    <string name="menu_file_info">información</string>
-    <string name="menu_settings">configuración</string>
+    <string name="menu_new_file">Nuevo</string>
+    <string name="menu_save_file">Guardar</string>
+    <string name="menu_file_info">Información</string>
+    <string name="menu_settings">Configuración</string>
     <string name="dialog_close_app">Los cambios sin guardar se perderán. \n¿Cerrar aplicación?</string>
     <string name="dialog_open_file">Los cambios sin guardar se perderán. \n¿Abrir archivo?</string>
     <string name="dialog_new_file">Los cambios sin guardar se perderán. \n¿Crear un archivo nuevo?</string>
@@ -16,11 +16,11 @@
     <string name="dialog_close_file">Los cambios sin guardar se perderán. \n¿Cerrar archivo?</string>
     <string name="dialog_remove_from_list">¿Está seguro de quitar este archivo de la lista? Puede reabrirlo en otro momento:</string>
     <string name="dialog_delete_file">¿Está seguro de eliminar este archivo permanentemente? Esta acción no se puede deshacer:</string>
-    <string name="dialog_option_back">atrás</string>
-    <string name="dialog_option_edit">editar</string>
-    <string name="dialog_option_info">info</string>
-    <string name="dialog_option_remove_from_list">quitar de lista</string>
-    <string name="dialog_option_delete_file">eliminar</string>
+    <string name="dialog_option_back">Atrás</string>
+    <string name="dialog_option_edit">Editar</string>
+    <string name="dialog_option_info">Info</string>
+    <string name="dialog_option_remove_from_list">Borrar</string>
+    <string name="dialog_option_delete_file">Eliminar</string>
     <string name="file">Archivo</string>
     <string name="location">Localización</string>
     <string name="deleted_file_ok">archivo eliminado</string>

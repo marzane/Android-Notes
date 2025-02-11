@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,7 +26,8 @@ import com.marzane.notepad.models.NoteModel;
 public class CustomDialogFileOptions extends Dialog implements View.OnClickListener {
 
     private Activity activity;
-    private LinearLayout back, edit, info, removeList, delete;
+    private LinearLayout edit, info, removeList, delete;
+    private ImageButton back;
     private TextView tvMessage;
     private NoteModel note;
     private Resources resources;
