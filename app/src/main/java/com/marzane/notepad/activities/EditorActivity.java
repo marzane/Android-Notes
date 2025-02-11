@@ -675,11 +675,16 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     // This code checks if Storage Permissions have been granted and returns a boolean:
     public boolean checkStoragePermissions(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            //Android is 11 (R) or above
+            return true;
+        }else {
             //Below android 11
             int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
             return read == PackageManager.PERMISSION_GRANTED && write == PackageManager.PERMISSION_GRANTED;
+        }
     }
 
 
@@ -688,7 +693,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     // Request For Storage Permissions
     private void requestForStoragePermissions() {
         //Android is 11 (R) or above
-        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
 
             //Below android 11
             ActivityCompat.requestPermissions(
@@ -699,7 +704,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
                     },
                     STORAGE_PERMISSION_CODE
             );
-
+        }
 
     }
 
