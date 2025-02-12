@@ -70,7 +70,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
     private boolean unsavedChanged;          // are there unsaved changes?
     private boolean isAutosaveEnabled;
     private boolean isToolbarEnabled;
-    private boolean textwatcherOnCreate;
 
     // layout elements
     private EditText etEditor;
@@ -120,7 +119,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         etEditor.setTextSize(fontSize);
 
         unsavedChanged = false;
-        textwatcherOnCreate = true;
 
         textTools = new TextTools(this, etEditor);
 
@@ -146,7 +144,6 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
         // si no tengo ningun titulo para el archivo le pongo uno por defecto Ej: "nuevo.txt"
         if (note.getTitle() == null) {
             note.setTitle(resources.getString(R.string.default_title));
-
         }
 
         getSupportActionBar().setTitle(note.getTitle());
@@ -200,25 +197,21 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
             } else {
                 etEditor.setText(text);
-                updateUnsavedChangesState();
+
                 handlePathOz.getRealPath(uriFile);
-
-                showKeyboard();
-
                 intent.removeExtra(resources.getString(R.string.extra_intent_uri_file));
+                showKeyboard();
             }
 
         }
-
-        etEditor.addTextChangedListener(textWatcher);
 
 
     }
 
 
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        textwatcherOnCreate = true;
 
         savedInstanceState.putSerializable(LOCALE_STATE, locale);
         savedInstanceState.putSerializable(NOTE_STATE, note);
@@ -233,6 +226,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
     @Override
     protected void onResume() {
+
+        etEditor.addTextChangedListener(textWatcher);
 
         updateSettingsValues();
 
@@ -371,6 +366,7 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         saveButton = menu.findItem(R.id.save_file);
         updateUnsavedChangesState();
+
 
         bottomBar = findViewById(R.id.bottom_tools);
         // Inflate and initialize the bottom menu
@@ -515,14 +511,8 @@ public class EditorActivity extends AppCompatActivity implements HandlePathOzLis
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            if(textwatcherOnCreate && !unsavedChanged) {
-                textwatcherOnCreate = false;
-                updateUnsavedChangesState();
-            } else {
-                unsavedChanged = true;
-                updateUnsavedChangesState();
-            }
+            unsavedChanged = true;
+            updateUnsavedChangesState();
 
         }
 
